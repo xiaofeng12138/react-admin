@@ -1,0 +1,29 @@
+.formWrap{
+    display: flex;
+    width: 350px;
+    height: 100vh;
+    margin: auto;
+    align-items: center;
+    >div{
+        width: 100%;
+    }
+}
+.formHeader{
+    height: 56px;
+    line-height: 56px;
+    color: #fff;
+    .column{
+        float: left;
+        font-size: 16px;
+        color: #fff;
+        margin-bottom: 0 !important;
+    }
+    span{
+        float: right;
+        font-size: 12px;
+        opacity: .3;
+    }
+}
+.fromContentt{
+   
+}
