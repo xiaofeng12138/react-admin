@@ -3,8 +3,6 @@ import './index.scss'
 
 import { Form, Input, Button, Row, Col } from 'antd';
 import { UserOutlined, LockOutlined  } from '@ant-design/icons';
-import {valid_password} from '../../utils/valid_password'
-import {Login} from '../../api/account'
 
 class LoginForm extends React.Component{
     constructor(){
@@ -12,11 +10,6 @@ class LoginForm extends React.Component{
         this.setState ={}
     }
     onFinish = values => {
-        Login().then(res=>{
-            console.log(res)
-        }).catch(err=>{
-            console.log(err)
-        })
         console.log('Received values of form: ', values);
       };
 
@@ -38,31 +31,17 @@ class LoginForm extends React.Component{
                         name="normal_login"
                         className="login-form"
                         initialValues={{ remember: true }}
-                        onFinish={this.onFinish}
+                        onFinish={()=> this.onFinish}
                         >
-                        <Form.Item name="username" rules={
-                            [
-                                { required: true, message: '邮箱不能为空' },
-                                {type:'email',message: '请输入正确的邮箱'}
-                            ]
-                        }>
-                            <Input prefix={<UserOutlined className="site-form-item-icon" />}  placeholder="email"/>
+                        <Form.Item name="username" rules={[{ required: true, message: 'Please input your Username!' }]}>
+                            <Input prefix={<UserOutlined className="site-form-item-icon" />}  placeholder="Username"/>
                         </Form.Item>
 
-                        <Form.Item name="password" rules={
-                            [
-                                { required: true, message: '密码不能为空' },
-                                {pattern:valid_password,message: '数字+密码且长度大于6位小于20位'}
-                            ]
-                        }>
+                        <Form.Item name="password" rules={[{ required: true, message: 'Please input your Username!' }]}>
                             <Input prefix={<LockOutlined  className="site-form-item-icon" />} placeholder="password"/>
                         </Form.Item>
 
-                        <Form.Item  name="code" rules={
-                            [
-                                { required: true, message: '验证码不能为空' }
-                            ]
-                        } >
+                        <Form.Item  name="code" rules={[{ required: true, message: 'Please input your Username!' }]} >
                             <Row gutter={13}>
                                 <Col span={15} >
                                    <Input prefix={<LockOutlined  className="site-form-item-icon" />}  placeholder="code"/>

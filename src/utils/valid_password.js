@@ -1,0 +1,1 @@
+export  const valid_password = /^(?![0-9]+$)(?![A-Za-z]+$)[0-9A-Za-z]{6,20}$/

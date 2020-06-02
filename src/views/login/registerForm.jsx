@@ -25,7 +25,6 @@ class RegisterForm extends React.Component{
                         <span onClick={this.toggleForm}>账号登录</span>
                     </div>
                     <div className="fromContentt">
-
                     <Form
                         name="normal_login"
                         className="login-form"
