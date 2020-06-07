@@ -8,3 +8,12 @@ export function Login(data){
         data
     })
 }
+
+//获取验证码接口
+export function getCode(data){
+    return service.request({
+        url:"/getSms/",
+        method:'POST',
+        data
+    })
+}
