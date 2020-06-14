@@ -1,7 +1,7 @@
 import React ,{Fragment } from 'react'
 import './index.scss'
 
-import { Form, Input, Button, Row, Col, } from 'antd';
+import { Form, Input, Button, Row, Col,message } from 'antd';
 import { UserOutlined, LockOutlined  } from '@ant-design/icons';
 import {valid_password} from '../../utils/valid_password'
 import {Login} from '../../api/account'
@@ -14,25 +14,45 @@ class LoginForm extends React.Component{
         super()
         this.state ={
             username:'',
+            password:'',
+            code:'',
+            module: 'login'
         }
     }
     onFinish = values => {
-        Login().then(res=>{
+        let requestData = {
+            username:this.state.username,
+            password:this.state.password,
+            code:this.state.code,
+        }
+        Login(requestData).then(res=>{
             console.log(res)
+            if(res.data.resCode === 0){
+               message.success(res.data.message)
+            }
         }).catch(err=>{
             console.log(err)
         })
-        console.log('Received values of form: ', values);
       };
-
-     
-
-    
       //获取输入框邮箱
       getUserName =(e)=>{
           let emailValue = e.target.value
           this.setState({
               username:emailValue
+          })
+      }
+       //获取输入框密码
+      getPassword =(e)=>{
+          let password = e.target.value
+          this.setState({
+              password
+          })
+      }
+       //获取输入框验证码
+      getCode =(e)=>{
+          let code = e.target.value
+          this.setState({
+              code
           })
       }
 
@@ -42,7 +62,7 @@ class LoginForm extends React.Component{
     }
 
     render(){
-        const { username } = this.state
+        const { username,password,code,module } = this.state
         return (
                   <Fragment>
                     <div className="formHeader">
@@ -63,7 +83,7 @@ class LoginForm extends React.Component{
                                 {type:'email',message: '请输入正确的邮箱'}
                             ]
                         }>
-                            <Input value={username} onChange={this.getUserName} prefix={<UserOutlined className="site-form-item-icon" />}  placeholder="email"/>
+                            <Input value={username} onChange={this.getUserName} prefix={<UserOutlined className="site-form-item-icon" />}  placeholder="请输入邮箱"/>
                         </Form.Item>
 
                         <Form.Item name="password" rules={
@@ -72,7 +92,7 @@ class LoginForm extends React.Component{
                                 {pattern:valid_password,message: '数字+密码且长度大于6位小于20位'}
                             ]
                         }>
-                            <Input prefix={<LockOutlined  className="site-form-item-icon" />} placeholder="password"/>
+                            <Input value={password} onChange={this.getPassword} prefix={<LockOutlined  className="site-form-item-icon" />} placeholder="请输入密码"/>
                         </Form.Item>
 
                         <Form.Item  name="code" rules={
@@ -82,11 +102,10 @@ class LoginForm extends React.Component{
                         } >
                             <Row gutter={13}>
                                 <Col span={15} >
-                                   <Input prefix={<LockOutlined  className="site-form-item-icon" />}  placeholder="code"/>
+                                   <Input value={code} onChange={this.getCode} prefix={<LockOutlined  className="site-form-item-icon" />}  placeholder="请输入验证码"/>
                                 </Col>
                                 <Col span={9} >
-                                    <Code username = {username} />
-                                   
+                                    <Code username = {username} module = {module} />
                                 </Col>
                             </Row>
                         </Form.Item>

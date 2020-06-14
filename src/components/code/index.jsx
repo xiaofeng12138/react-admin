@@ -12,6 +12,7 @@ class Code extends Component{
             code_button_text:'获取验证码',
             code_button_loading:false,
             code_button_disabled:false,
+            module:props.module
         }
     }
 
@@ -38,11 +39,12 @@ class Code extends Component{
           code_button_loading:true
         })
         let requestData = {
-            module: 'login',
+            module: this.state.module,
             username
         }
         getCode(requestData).then(res=>{
            if(res.data.resCode === 0){
+              message.success(res.data.message);
               this.countDown()
            }
         }).catch((err)=>{

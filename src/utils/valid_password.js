@@ -6,3 +6,7 @@ const reg_email = /^[a-zA-Z0-9]+([-_.][a-zA-Z0-9]+)*@[a-zA-Z0-9]+([-_.][a-zA-Z0-
 export function validata_email(value) {
      return reg_email.test(value)
 }
+
+export function validata_passwordFn(value) {
+     return valid_password.test(value)
+}
