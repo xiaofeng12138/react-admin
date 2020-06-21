@@ -1,10 +1,13 @@
 import React ,{Fragment } from 'react'
 import './index.scss'
+import { withRouter } from "react-router-dom";  //添加白名单
 
 import { Form, Input, Button, Row, Col,message } from 'antd';
 import { UserOutlined, LockOutlined  } from '@ant-design/icons';
 import {valid_password} from '../../utils/valid_password'
 import {Login} from '../../api/account'
+//导入存储函数
+import {setToken} from '../../utils/token.js'
 
 //引入获取验证码组件
 import Code from '../../components/code/index'
@@ -26,10 +29,12 @@ class LoginForm extends React.Component{
             code:this.state.code,
         }
         Login(requestData).then(res=>{
-            console.log(res)
             if(res.data.resCode === 0){
                message.success(res.data.message)
             }
+            const token = res.data.data.token
+            setToken(token)
+            this.props.history.push('/index')
         }).catch(err=>{
             console.log(err)
         })
@@ -120,4 +125,4 @@ class LoginForm extends React.Component{
 }
 
 
-export default LoginForm
+export default withRouter(LoginForm)
