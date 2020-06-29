@@ -6,7 +6,7 @@ import {getToken} from '../../../utils/token'
 const privateRouter =  ({ component: Component, ...rest })=> {
   return (
     <Route {...rest} render={routeProps => (
-         getToken() ?<Component {...routeProps} /> : <Redirect to="/" />
+         getToken() ? <Component {...routeProps} /> : <Redirect to="/" />
       )}
     />
   );

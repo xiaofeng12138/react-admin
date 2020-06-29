@@ -1,0 +1,53 @@
+const router =[
+    {
+        title:'控制台',
+        icon:'home',
+        key:'/index'
+    },
+    {
+        title:'用户管理',
+        icon:'home',
+        key:'/index/user',
+        children:[
+            {
+                title:'用户列表',
+                icon:'home',
+                key:'/index/user/list'
+            },
+            {
+                title:'添加用户',
+                icon:'home',
+                key:'/index/user/add'
+            }
+        ]
+    },
+    {
+        title:'部门管理',
+        icon:'home',
+        key:'/index/partment',
+        children:[
+            {
+                title:'部门列表',
+                icon:'home',
+                key:'/index/partment/list'
+            },
+            {
+                title:'添加部门',
+                icon:'home',
+                key:'/index/partment/add'
+            }
+        ]
+    },
+    {
+        title:'请假',
+        icon:'home',
+        key:'/index/qj'
+    },{
+        title:'加班',
+        icon:'home',
+        key:'/index/jb'
+    },
+]
+
+
+export default router;
