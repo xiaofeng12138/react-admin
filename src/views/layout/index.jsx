@@ -10,17 +10,30 @@ const { Header, Sider, Content } = Layout;
 class Index extends React.Component{
     constructor(){
         super()
-        this.state ={}
+        this.state ={
+            collapsed:false
+        }
+    }
+    componentDidMount=()=>{
+        let collapsed = JSON.parse(sessionStorage.getItem('collapsed'))
+        this.setState({
+            collapsed
+        })
+    }
+    toggleCollasped = ()=>{
+        let collapsed = !this.state.collapsed
+        this.setState({ collapsed })
+        sessionStorage.setItem('collapsed',collapsed)
     }
     render(){
         return(
             <div>
                    <Layout className='layout-wrap'>
-                    <Header className='layout-header'>
-                        <LayoutHeader />
-                    </Header>
+                   <Sider collapsed={this.state.collapsed}  width='250px' className='aside'><LayoutAside /></Sider>
                         <Layout>
-                            <Sider width='250px' className='aside'><LayoutAside /></Sider>
+                            <Header  className='layout-header'  >
+                                <LayoutHeader toggle = {this.toggleCollasped} />
+                            </Header>
                             <Content className='layout-content'>
                                 <ContainerMain />
                             </Content>

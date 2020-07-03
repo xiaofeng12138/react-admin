@@ -11,6 +11,9 @@ class layoutaside extends React.Component{
     render(){
         return(
             <div >
+                {/* <div className='logo'>
+                    <h1><span>1111</span></h1>
+                </div> */}
                  <AsideMenu />
             </div>
         )

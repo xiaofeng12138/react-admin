@@ -1,16 +1,19 @@
 import React from 'react'
 import './header.scss'
+import {MenuUnfoldOutlined } from '@ant-design/icons'
 
 class layoutheader extends React.Component{
-    constructor(){
-        super()
-        this.state ={}
+    constructor(props){
+        super(props)
+        this.state ={
+        }
+    }
+    toggleMenu =()=>{
+        this.props.toggle()
     }
     render(){
         return(
-            <div className='logo'>
-                <h1><span></span></h1>
-            </div>
+            <span className='toggle_icon' onClick={this.toggleMenu}><MenuUnfoldOutlined /></span>
         )
     }
 }

@@ -1,16 +1,8 @@
-.logo{
-    width: 250px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #001529;
-    margin-left: -50px;
-    margin-bottom: 0;
-    height: 75px;
-    span{
-      display: block;
-      width: 177px;
-      height: 47px;
-      background-color: #1a2d3f;
-    }
+.toggle_icon{
+  font-size: 30px;
+  cursor: pointer;
+  margin-left: 30px;
+}
+.ant-layout-header{
+  padding: 0;
 }

@@ -2,17 +2,51 @@ import React from 'react'
 import { Menu } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import Router from '../../router/router'
-import { Link } from 'react-router-dom'
+import { Link,withRouter } from 'react-router-dom'
 const { SubMenu } = Menu;
-
-
-
 
 class layoutaside extends React.Component{
     constructor(){
         super()
-        this.state ={}
+        this.state ={
+            selectedKeys:[],
+            openKeys:[],
+        }
     }
+    //生命周期钩子函数  使用withRouter  可以获取当前路劲的url
+    componentDidMount(){
+        let pathName = this.props.location.pathname
+        let openPathName = pathName.split('/').splice(0,3).join('/')
+        let meunHigh = {
+            selectedKeys:pathName,
+            openKeys:openPathName
+        }
+        this.setMenuHigh(meunHigh)
+    }
+
+    selectMenu = ({ item, key, keyPath, domEvent })=>{
+        let meunHigh = {
+            selectedKeys:key,
+            openKeys:keyPath[keyPath.length - 1]
+        }
+        this.setMenuHigh(meunHigh)
+    }
+
+    //打开父集菜单
+        openMenu=(openKey)=>{
+            this.setState({
+                openKeys:[openKey[openKey.length - 1]]
+            })
+        }
+
+    
+    //菜单高亮选中的处理函数
+    setMenuHigh = ({selectedKeys,openKeys})=>{
+        this.setState({
+            selectedKeys:[selectedKeys],
+            openKeys:[openKeys]
+        })
+     }
 
     //无子集菜单处理
     renderMenu =({key,title})=>{
@@ -36,13 +70,16 @@ class layoutaside extends React.Component{
          )  
     }
     render(){
+        const {selectedKeys,openKeys} = this.state
         return(
             <div>
                 <Menu
+                    onOpenChange ={this.openMenu}
+                    onClick = {this.selectMenu}
                     theme="dark"
                     mode="inline"
-                    defaultSelectedKeys={['1']}
-                    defaultOpenKeys={['sub1']}
+                    selectedKeys={selectedKeys}
+                    openKeys={openKeys}
                     style={{ height: '100%' }}
                       >
                     {
@@ -56,4 +93,4 @@ class layoutaside extends React.Component{
     }
 }
 
-export default layoutaside
+export default withRouter(layoutaside);
