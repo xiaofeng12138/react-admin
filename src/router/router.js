@@ -29,12 +29,12 @@ const router =[
             {
                 title:'部门列表',
                 icon:'home',
-                key:'/index/partment/list'
+                key:'/index/department/list'
             },
             {
                 title:'添加部门',
                 icon:'home',
-                key:'/index/partment/add'
+                key:'/index/department/add'
             }
         ]
     },
