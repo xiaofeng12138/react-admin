@@ -7,7 +7,7 @@ import { UserOutlined, LockOutlined  } from '@ant-design/icons';
 import {valid_password} from '../../utils/valid_password'
 import {Login} from '../../api/account'
 //导入存储函数
-import {setToken} from '../../utils/token.js'
+import {setToken,setUsername} from '../../utils/cookies'
 
 //引入获取验证码组件
 import Code from '../../components/code/index'
@@ -34,6 +34,8 @@ class LoginForm extends React.Component{
             }
             const token = res.data.data.token
             setToken(token)
+            setUsername(res.data.data.username)
+            
             this.props.history.push('/index')
         }).catch(err=>{
             console.log(err)

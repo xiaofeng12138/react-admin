@@ -18,7 +18,6 @@ class Code extends Component{
 
     //获取props生命周期函数
     componentWillReceiveProps({username}){
-        console.log(username)
         this.setState({
             username
         })
