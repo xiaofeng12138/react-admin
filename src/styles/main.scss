@@ -9,3 +9,11 @@ body {
     -moz-#{$type}: $value;
     #{$type}: $value;
 }
+.inline-button{
+    button+button {
+        margin-left:10px
+    }
+}
+.table-wrap{
+    padding-top:30px
+}
