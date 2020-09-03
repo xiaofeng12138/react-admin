@@ -1,12 +1,13 @@
 import React from 'react'
 import { Form, Input, Button, Radio ,InputNumber,message} from 'antd';
-import {DepartmentAddApi} from '../../api/department'
+import {DepartmentAddApi,Detailedpartment,Editdpartment} from '../../api/department'
 
 class departmentAdd extends React.Component{
     constructor(){
         super()
         this.state ={
             loading:false,
+            id:'',
             formLayout:{
                 labelCol:{span:2},
                 wrapperCol:{span:10}
@@ -16,6 +17,19 @@ class departmentAdd extends React.Component{
             }
         }
     }
+
+    componentWillMount(){
+        if(this.props.location.state){
+            let id = this.props.location.state.id
+            this.setState({
+                id
+            })
+        }
+    }
+
+    componentDidMount(){
+        this.getDetailedFn()
+    }
     
     onFinish = (value)=>{
         if(!value.name){message.error("部门名称不能为空"); return false}
@@ -24,7 +38,32 @@ class departmentAdd extends React.Component{
         this.setState({
              loading: true
         })
-        DepartmentAddApi(value).then(res =>{
+        if(this.state.id){
+           value.id = this.state.id
+           this.updateFn(value)
+        }else{
+            DepartmentAddApi(value).then(res =>{
+                message.success(res.data.message)
+                this.setState({loading: false})
+                this.refs.Form.resetFields()
+            }).catch(()=>{
+                this.setState({loading: false})
+            })
+        }
+    }
+
+    //获取部门详情函数
+    getDetailedFn(){
+        let id = this.state.id
+        if(id){
+            Detailedpartment({id}).then(res=>{
+                console.log(res)
+                this.refs.Form.setFieldsValue(res.data.data)
+            })
+        }
+    }
+    updateFn(value){
+        Editdpartment(value).then(res=>{
             message.success(res.data.message)
             this.setState({loading: false})
             this.refs.Form.resetFields()

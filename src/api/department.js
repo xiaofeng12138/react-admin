@@ -26,3 +26,32 @@ export function Deletepartment(data){
         data
     })
 }
+
+/**部门状态*/
+export function Statuspartment(data){
+    return service.request({
+        url:"/department/status/",
+        method:'POST',
+        data
+    })
+}
+
+/**部门详情*/
+export function Detailedpartment(data){
+    return service.request({
+        url:"/department/detailed/",
+        method:'POST',
+        data
+    })
+}
+
+
+/**部门编辑*/
+export function Editdpartment(data){
+    return service.request({
+        url:"/department/edit/",
+        method:'POST',
+        data
+    })
+}
+

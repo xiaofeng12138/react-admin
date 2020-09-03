@@ -1,7 +1,8 @@
 
 import React ,{ Component,Fragment} from 'react'
-import { Form, Input, Button,Table,Switch ,message} from 'antd';
-import { GetdepartmentList ,Deletepartment} from '../../api/department.js'
+import { Link} from 'react-router-dom'
+import { Form, Input, Button,Table,Switch ,message,Modal} from 'antd';
+import { GetdepartmentList ,Deletepartment,Statuspartment} from '../../api/department.js'
 class departmentList extends React.Component{
     constructor(){
         super()
@@ -11,6 +12,9 @@ class departmentList extends React.Component{
             keyWord:'',
             //复选框
             selectedRowKeys:[],
+            //弹出框
+            visible:false,
+            id:'',
             columns:[
                 {title: '部门名称', dataIndex:'name', align: 'center', key: 'name',},
                 {title: '禁启用',
@@ -18,7 +22,7 @@ class departmentList extends React.Component{
                   align: 'center', 
                   key: 'status',
                   render:(text,rowData)=>{
-                     return    <Switch checkedChildren="启用" unCheckedChildren="禁用" defaultChecked = {rowData.status == '1'? true :false} />
+                     return    <Switch onClick={()=>this.changeStatus(rowData)} checkedChildren="启用" unCheckedChildren="禁用" defaultChecked = {rowData.status == '1'? true :false} />
                   }
                 },
                 {title: '人数', dataIndex:'number', align: 'center', key: 'number',},
@@ -26,8 +30,10 @@ class departmentList extends React.Component{
                  render:(text,rowData)=>{
                      return (
                          <div className='inline-button'>
-                             <Button type='primary'>编辑</Button>
-                             <Button type='danger' onClick={()=>this.onHanderDelete(rowData.id)} >删除</Button>
+                             <Button type='primary' onClick={()=>this.openConfirm(rowData.id)}>
+                                 <Link to={{pathname:"/index/department/add",state:{id:rowData.id}}}>编辑</Link>
+                             </Button>
+                             <Button type='danger' onClick={()=>this.openConfirm(rowData.id)} >删除</Button>
                          </div>
                      )
                  }
@@ -36,7 +42,14 @@ class departmentList extends React.Component{
             tableData:[]
         }
     }
-
+    //打开弹出框
+    openConfirm=(id)=>{
+       if(!id){return false}
+       this.setState({
+           visible:true,
+           id
+       })
+    }
     onFinish =(value)=>{
         this.setState({
             pageSize:10,
@@ -46,9 +59,12 @@ class departmentList extends React.Component{
         this.loadData()
     }
     onHanderDelete =(id)=>{
-        if(!id){ return false}
         Deletepartment({id}).then(res=>{
             message.success(res.data.message)
+            this.setState({
+                visible:false,
+                id:''
+            })
             this.loadData()
         })
     }
@@ -77,6 +93,22 @@ class departmentList extends React.Component{
         })
         // console.log(selectedRowKeys )
     }
+    submitDelete =()=>{
+        this.onHanderDelete(this.state.id)
+    }
+    //修改状态
+    changeStatus =(rowData)=>{
+        console.log(rowData.status)
+        const requsetData ={
+            id:rowData.id,
+            status:rowData.status === '1' ?false:true
+        }
+        Statuspartment(requsetData).then(res=>{
+            message.success(res.data.message)
+            this.loadData()
+        })
+        console.log(rowData.status)
+    }
     render(){
         const {columns,tableData} = this.state
         const rowSelection = {
@@ -93,8 +125,20 @@ class departmentList extends React.Component{
                 </Form.Item>
                 </Form>
                <div className='table-wrap'>
-               <Table rowSelection ={rowSelection} rowKey="id" columns ={columns}  dataSource ={tableData} bordered></Table>
+                  <Table rowSelection ={rowSelection} rowKey="id" columns ={columns}  dataSource ={tableData} bordered></Table>
                </div>
+               <Modal
+                    title="Modal"
+                    visible={this.state.visible}
+                    onOk={this.submitDelete}
+                    onCancel={()=>{this.setState({visible:false})}}
+                    okText="确认"
+                    cancelText="取消"
+                    >
+                    <p className='text_center'>确定删除此信息吗？ <strong className='color_red'>删除后不可恢复</strong></p>
+                   
+                   
+                    </Modal>
             </Fragment>
             
         )
