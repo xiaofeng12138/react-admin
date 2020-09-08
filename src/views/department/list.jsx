@@ -7,6 +7,7 @@ class departmentList extends React.Component{
     constructor(){
         super()
         this.state ={
+            laodingTable:false,
             pageSize:10,
             pageNumber:1,
             keyWord:'',
@@ -43,8 +44,14 @@ class departmentList extends React.Component{
         }
     }
     //打开弹出框
-    openConfirm=(id)=>{
-       if(!id){return false}
+    openConfirm(id){
+       if(!id){
+           if(this.state.selectedRowKeys.length === 0 ){
+               message.error('请勾选需要删除的选项')
+               return false
+            }
+            id = this.state.selectedRowKeys.join()
+       }
        this.setState({
            visible:true,
            id
@@ -63,25 +70,31 @@ class departmentList extends React.Component{
             message.success(res.data.message)
             this.setState({
                 visible:false,
-                id:''
+                id:'',
+                selectedRowKeys:[],
             })
             this.loadData()
         })
     }
     loadData =()=>{
-        const {pageNumber,pageSize,keyWord} = this.state
+        const {pageNumber,pageSize,keyWord,laodingTable} = this.state
+        if(laodingTable) {return false}
         const reqestData ={
             pageNumber,
             pageSize
         }
         if(keyWord){reqestData.name = keyWord}
+        this.setState({laodingTable:true})
         GetdepartmentList(reqestData).then(res=>{
             let data = res.data.data.data
+            this.setState({laodingTable:false})
             if(data.length > 0){
                 this.setState({
                     tableData:data
                 })
             }
+        }).catch((error)=>{
+            this.setState({laodingTable:false})
         })
     }
     componentDidMount(){
@@ -121,14 +134,15 @@ class departmentList extends React.Component{
                     <Input  placeholder="请输入部门名称" />
                 </Form.Item>
                 <Form.Item >
-                    <Button type="primary" htmlType="submit">搜索 </Button>
+                    <Button type="primary" htmlType="submit">搜 索 </Button>
                 </Form.Item>
                 </Form>
                <div className='table-wrap'>
-                  <Table rowSelection ={rowSelection} rowKey="id" columns ={columns}  dataSource ={tableData} bordered></Table>
+                  <Table loading={this.state.laodingTable}  rowSelection ={rowSelection} rowKey="id" columns ={columns}  dataSource ={tableData} bordered></Table>
+                  <Button type="primary" onClick={()=>this.openConfirm()}>批量删除 </Button>
                </div>
                <Modal
-                    title="Modal"
+                    title="部门删除"
                     visible={this.state.visible}
                     onOk={this.submitDelete}
                     onCancel={()=>{this.setState({visible:false})}}
