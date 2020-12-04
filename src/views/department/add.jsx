@@ -35,7 +35,6 @@ class departmentAdd extends React.Component{
 
     render(){
         return (
-            
             <Form
                 ref ='Form'
                 onFinish={this.onFinish}
