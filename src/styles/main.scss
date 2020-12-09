@@ -9,3 +9,16 @@ body {
     -moz-#{$type}: $value;
     #{$type}: $value;
 }
+.inline-button{
+    button+button {
+        margin-left:10px
+    }
+}
+.table-wrap{
+    padding-top:30px
+}
+.text_center{text-align: center;}
+.color_red{color:red}
+//右浮动
+.pull-right{float: right;}
+.mar-10{margin-top: 20px;}

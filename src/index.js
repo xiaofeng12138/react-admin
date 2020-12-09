@@ -4,6 +4,12 @@ import ReactDOM from 'react-dom';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
+
+//引入store
+import Store from '@/store/index'
+
+console.log(Store.getState())
+
 ReactDOM.render(<App />,document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change

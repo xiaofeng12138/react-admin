@@ -1,6 +1,6 @@
 import axios from 'axios'
 import {getToken,getUsername} from './cookies'
-import { message } from 'antd';
+import { message} from 'antd';
 //第一步创建实例
 
 const service = axios.create({
@@ -21,11 +21,10 @@ const service = axios.create({
 
   //第三步 响应拦截
   service.interceptors.response.use(function (response) {
-    //全局性请求拦截
     let data = response.data
-    if(data.resCode !== 0){  //响应错误的情况
+    if(data.resCode !== 0){
       message.error(data.message)
-      return Promise.reject(data)
+      return Promise.reject(response)
     }else{
       return response;
     }
