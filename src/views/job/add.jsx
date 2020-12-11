@@ -1,9 +1,11 @@
 import React,{Fragment} from 'react'
 import {message} from 'antd';
-import {DepartmentAddApi,Detailedpartment,Editdpartment} from '@api/department'
+import {submitForm} from '@api/common'
+import requestUrl from '@api/requestUrl'
+import { GetJobDetail } from '@api/job'
 
 //引入form组件
-import FormCom from '@c/Form/index'
+import FormCom from '@c/Form'
 class departmentAdd extends React.Component{
     constructor(){
         super()
@@ -11,12 +13,15 @@ class departmentAdd extends React.Component{
             loading:false,
             id:'',
             FormConfig:{
-                url:'departmentAdd',
+                url:'jobAdd',
+                editKey:'',  //修改的key
                 initialValues:{
                     number:0,
                     status:true
                 },
                 setFieldsValue:{},
+                format:'parentId', //处理字符串
+
             },
             formLayout:{
                 labelCol:{span:2},
@@ -26,20 +31,21 @@ class departmentAdd extends React.Component{
               wrapperCol: { offset: 2, span: 2 },
             },
             formItem:[
-                {type:'Input',label:'部门名称',name:'name',required:true,style:{width:'200px'},placeholder:'请输入部门名称'},
-                // {
-                //     type:'Select',
-                //     label:'部门名称',
-                //     name:'name',
-                //     required:true,
-                //     options:[
-                //         {label:'研发部',value:'研发部'},
-                //         {label:'技术部',value:'技术部'},
-                //         {label:'人事部',value:'人事部'},
-                //     ],
-                //     style:{width:'200px'}
-                // },
-                {type:'InputNumber',label:'部门人数',name:'number',required:true,min:0,max:500,style:{width:'200px'}},
+                // {type:'Input',label:'部门名称',name:'parentId',required:true,style:{width:'200px'},placeholder:'请选择部门名称'},
+                {
+                    type:'SelectComponent',
+                    label:'部门名称',
+                    name:'parentId',
+                    url:'getDepartmentList',
+                    propsKey:{  //自定义option 里面的value 和label的属性
+                         value:'id',
+                         label:'name'
+                    },
+                    required:true,
+                    style:{width:'200px'}
+                },
+                {type:'Input',label:'职位名称',name:'jobName',required:true,style:{width:'200px'},placeholder:'请填写职位名称'},
+                
                 {
                     type:'Radio',
                     label:'禁启用',
@@ -52,7 +58,7 @@ class departmentAdd extends React.Component{
                 },
                 {
                     type:'TextArea',
-                    label:'部门描述',
+                    label:'职位描述',
                     name:'content',
                     row:6,
                     style:{width:'500px'}
@@ -65,13 +71,13 @@ class departmentAdd extends React.Component{
         if(this.props.location.state){
             let id = this.props.location.state.id
             this.setState({
-                id
+                id,
             })
         }
     }
 
     componentDidMount(){
-        this.getDetailedFn()
+         this.getDetailedFn()
     }
     
     onFinish = (value )=>{
@@ -81,7 +87,12 @@ class departmentAdd extends React.Component{
 
     //添加函数
     addFn=(value)=>{
-        DepartmentAddApi(value).then(res=>{
+        let requestData ={
+            url:requestUrl[this.state.FormConfig.url],
+            data:value
+        }
+        submitForm(requestData).then(res=>{
+            console.log(res)
             message.success(res.data.message)
         })
     }
@@ -90,29 +101,32 @@ class departmentAdd extends React.Component{
     getDetailedFn(){
         let id = this.state.id
         if(id){
-            Detailedpartment({id}).then(res=>{
+            GetJobDetail({id}).then(res=>{
                 this.setState({
                    FormConfig:{
                         ...this.state.FormConfig,
                         setFieldsValue:res.data.data,
+                        url:'jobEdit',
+                        editKey:'jobId'
                    }
                 })
             })
         }
     }
 
-    updateFn(value){
-        let requestData = {...value,id:this.state.id}
-        Editdpartment(requestData).then(res=>{
-            message.success(res.data.message)
-        })
-    }
+    // updateFn(value){
+    //     let requestData = {...value,id:this.state.id}
+    //     Editdpartment(requestData).then(res=>{
+    //         message.success(res.data.message)
+    //         this.refs.Form.resetFields()
+    //     })
+    // }
 
     render(){
         const { formItem } = this.state
         return (
             <Fragment>
-                    <FormCom formItem ={formItem} formLayout= {this.state.formLayout} FormConfig ={this.state.FormConfig} onFinish ={this.onFinish} />
+                    <FormCom  formItem ={formItem} formLayout= {this.state.formLayout} FormConfig ={this.state.FormConfig}  />
             </Fragment>
         )
     }

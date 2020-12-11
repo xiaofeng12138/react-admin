@@ -10,8 +10,6 @@ const config = {
 
 //Reducer
 const configReducer = function(state = config,action){
-
-
     switch(action.type){
         case 'ADD_STATUS':{
             return {

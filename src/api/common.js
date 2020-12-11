@@ -29,3 +29,13 @@ export function submitForm(params){
     })
 }
 
+
+//公用请求接口
+export function requestDataFn(params){
+    return service.request({
+        url:params.url,
+        method:params.method || 'POST',
+        data:params.data
+    })
+}
+

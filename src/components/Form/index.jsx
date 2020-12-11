@@ -3,6 +3,7 @@ import {Form, Input,Button,InputNumber,Select,Radio,message } from 'antd';
 import { submitForm } from '@api/common'
 
 import requestUrl from '@api/requestUrl'
+import SelectCom from '@c/select/index'
 const { Option } = Select;
 
 class FormCom extends Component{
@@ -15,6 +16,7 @@ class FormCom extends Component{
                 'Input':'请输入',
                 'Radio':'请选择',
                 'Select':'请选择',
+                'SelectComponent':'请选择'
             }
         }
     }
@@ -39,6 +41,14 @@ class FormCom extends Component{
         return rules
     }
 
+    //自定义检验规则
+    validatorFn = (rule,value)=>{
+        if(value){
+           return Promise.resolve()
+        }
+        return Promise.reject('')
+    }
+
     //input处理函数
     inputElem =(item)=>{
         let rules = this.FormatRules(item)
@@ -58,6 +68,17 @@ class FormCom extends Component{
                 </Form.Item>
         )
     }
+
+    //下拉请求处理函数
+    SelectComponentElem =(item)=>{
+        let rules = this.FormatRules(item)
+        return (
+                <Form.Item label={item.label} name={item.name} key ={item.name} rules ={[...rules,{validator:this.validatorFn}]}>
+                    <SelectCom url = {item.url} name={item.name} propsKey ={item.propsKey} style ={item.style}/>
+                </Form.Item>
+        )
+    }
+    
 
      
     //select 处理函数
@@ -113,9 +134,30 @@ class FormCom extends Component{
             if(item.type === 'InputNumber'){fromList.push( this.inputNumberElem(item))}
             if(item.type === 'Radio'){fromList.push( this.radioElem(item))}
             if(item.type === 'TextArea'){fromList.push( this.TextAreaElem(item))}
+            if(item.type === 'SelectComponent'){fromList.push( this.SelectComponentElem(item))}
         })
         return fromList
     }
+
+
+    //数据处理函数
+    formatData =(value)=>{
+        //请求原始数据
+        const requestData = JSON.parse(JSON.stringify(value))   //深度拷贝
+        const { editKey,setFieldsValue } = this.props.FormConfig
+        const JsonKey = this.props.FormConfig.format
+        const keyValue = value[JsonKey]
+        if(Object.prototype.toString.call(keyValue) === "[object Object]"){
+            requestData[JsonKey] = keyValue[JsonKey]
+        }
+  
+        //判断是否存在编辑状态下的key
+        if(editKey){
+            requestData[editKey] = setFieldsValue[editKey]
+        }
+        return requestData;
+    }
+        
 
     //提交函数
     onFinish = (value)=>{
@@ -124,8 +166,19 @@ class FormCom extends Component{
             this.props.onFinish(value)
             return false
         }
+
+        //数据格式化
+        // 
+        // if(formatKey && value[formatKey]){
+        //     console.log(value[formatKey])
+        //     const dataKey = value[formatKey]
+        //     delete value[this.props.FormConfig.format]
+        //     value = Object.assign(value,dataKey)
+        // }
+
+        const dataValue = this.formatData(value)
         let requestData ={
-            data:value,
+            data:dataValue,
             url:requestUrl[this.props.FormConfig.url]
         }
         this.setState({ loading: true})

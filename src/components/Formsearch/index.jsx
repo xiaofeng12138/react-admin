@@ -22,7 +22,7 @@ class FormSearch extends Component{
     componentDidMount(){
         //获取store里面改变后数据的值
         Store.subscribe(()=>{
-            console.log(Store.getState())
+            // console.log(Store.getState())
         })
         Store.dispatch(addStatus({label:'所有',value:'all'}))
     }

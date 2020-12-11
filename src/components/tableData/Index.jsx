@@ -71,7 +71,7 @@ class TableComponents extends React.Component{
     }
 
     handerDelete (id){
-        console.log(this.state.checkBoxValue)
+        
         this.setState({ modalVisible:true})
         if(id){this.setState({checkBoxValue:[id]})}
         

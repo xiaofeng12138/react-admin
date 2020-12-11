@@ -3,7 +3,7 @@ import React ,{Fragment} from 'react'
 import { Link} from 'react-router-dom'
 import {Button,Switch ,message} from 'antd';
 import TableComponents from '@c/tableData/Index'
-import {Statuspartment} from '@api/department.js'
+import {Status} from '@api/job.js'
 
 class departmentList extends React.Component{
     constructor(){
@@ -12,12 +12,13 @@ class departmentList extends React.Component{
             pageSize:10,
             pageNumber:1,
             tableConfig:{
-                url:'departmentList',  //请求地址
+                url:'jobList',  //请求地址
                 method:'POST',  //请求方式 选填 默认使用post
                 checkBox:true,  //是否显示多选框 选填
-                rowKey:'id',   //table的绑定值
+                rowKey:'jobId',   //table的绑定值
                 batchButton:true,
                 thead:[  //表头
+                    {title: '职位名称', dataIndex:'jobName', align: 'center', key: 'jobName',},
                     {title: '部门名称', dataIndex:'name', align: 'center', key: 'name',},
                     { 
                       title: '禁启用',
@@ -25,20 +26,18 @@ class departmentList extends React.Component{
                       align: 'center', 
                       key: 'status',
                       render:(text,rowData)=>{
-                         return  <Switch onClick={()=>this.changeStatus(rowData)} checkedChildren="启用" unCheckedChildren="禁用" defaultChecked = {rowData.status === '1'? true :false} />
+                         return  <Switch onClick={()=>this.changeStatus(rowData)} checkedChildren="启用" unCheckedChildren="禁用" defaultChecked = { rowData.status ? true :false} />
                       }
                     },
-                    {title: '人数', dataIndex:'number', align: 'center', key: 'number',},
-                    {title: '部门ID', dataIndex:'id', align: 'center', key: 'id',},
                     {title: '操作',  align: 'center', width:215,
                         render:(text,rowData)=>{
                             return (
                                 <div className='inline-button'>
                                     {/* <Button type='primary' onClick={()=>this.openConfirm(rowData.id)}> */}
                                     <Button type='primary'>
-                                        <Link to={{pathname:"/index/department/add",state:{id:rowData.id}}}>编辑</Link>
+                                        <Link to={{pathname:"/index/job/add",state:{id:rowData.jobId}}}>编辑</Link>
                                     </Button>
-                                    <Button type='danger' onClick={() =>{this.delete(rowData.id)}} >删除</Button>
+                                    <Button type='danger' onClick={() =>{this.delete(rowData.jobId)}} >删除</Button>
                                 </div>
                             )
                         }
@@ -46,14 +45,8 @@ class departmentList extends React.Component{
                 ],
                 formSearch:[
                     {type:'Input',label:'部门名称',name:'name',placeholder:'请输入部门名称'},
-                    {
-                        type:'Select',
-                        label:'禁启用',
-                        name:'status',
-                        optionsKey:'status',
-                        style:{width:'120px'},
-                        placeholder:'请选择'
-                    },
+                    {type:'Input',label:'职位名称',name:'jobName',placeholder:'请输入职位名称'},
+                    
                 ]
             },
         }
@@ -67,10 +60,10 @@ class departmentList extends React.Component{
     //修改状态
     changeStatus =(rowData)=>{
         const requsetData ={
-            id:rowData.id,
-            status:rowData.status === '1' ? false : true
+            id:rowData.jobId,
+            status:!rowData.status
         }
-        Statuspartment(requsetData).then(res=>{
+        Status(requsetData).then(res=>{
             message.success(res.data.message)
         })
     }
