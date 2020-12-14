@@ -39,3 +39,15 @@ export function requestDataFn(params){
     })
 }
 
+
+//七牛云获取Token接口
+export function uploadToken(data){
+    return service.request({
+        url:'/uploadIToken/',
+        method:'POST',
+        data
+    })
+}
+
+
+

@@ -1,17 +1,23 @@
 import React,{Fragment} from 'react'
-import {message} from 'antd';
+import {message,Select} from 'antd';
+
+//API
 import {submitForm} from '@api/common'
-import requestUrl from '@api/requestUrl'
 import { GetJobDetail } from '@api/job'
+import { requestDataFn } from '@api/common.js'  //公用接口请求
+
+import requestUrl from '@api/requestUrl'  //引入接口地址
 
 //引入form组件
 import FormCom from '@c/Form'
+const { Option } = Select;
 class departmentAdd extends React.Component{
     constructor(){
         super()
         this.state ={
             loading:false,
             id:'',
+            selectItem:[],
             FormConfig:{
                 url:'jobAdd',
                 editKey:'',  //修改的key
@@ -32,15 +38,23 @@ class departmentAdd extends React.Component{
             },
             formItem:[
                 // {type:'Input',label:'部门名称',name:'parentId',required:true,style:{width:'200px'},placeholder:'请选择部门名称'},
+                // {
+                //     type:'SelectComponent',
+                //     label:'部门名称',
+                //     name:'parentId',
+                //     url:'getDepartmentList',
+                //     propsKey:{  //自定义option 里面的value 和label的属性
+                //          value:'id',
+                //          label:'name'
+                //     },
+                //     required:true,
+                //     style:{width:'200px'}
+                // },
                 {
-                    type:'SelectComponent',
+                    type:'Slot',
                     label:'部门名称',
                     name:'parentId',
-                    url:'getDepartmentList',
-                    propsKey:{  //自定义option 里面的value 和label的属性
-                         value:'id',
-                         label:'name'
-                    },
+                    SlotName:'department',
                     required:true,
                     style:{width:'200px'}
                 },
@@ -78,10 +92,25 @@ class departmentAdd extends React.Component{
 
     componentDidMount(){
          this.getDetailedFn()
+         this.GetSelectList()
     }
     
     onFinish = (value )=>{
         this.state.id ? this.updateFn(value) : this.addFn(value)
+    }
+    
+
+    //获取部门列表
+    GetSelectList(){
+        const params ={
+            url:requestUrl['getDepartmentList'],
+            data:{}
+        }
+        requestDataFn(params).then(res=>{
+            this.setState({
+                selectItem:res.data.data.data
+            })
+        })
     }
     
 
@@ -92,7 +121,6 @@ class departmentAdd extends React.Component{
             data:value
         }
         submitForm(requestData).then(res=>{
-            console.log(res)
             message.success(res.data.message)
         })
     }
@@ -126,7 +154,15 @@ class departmentAdd extends React.Component{
         const { formItem } = this.state
         return (
             <Fragment>
-                    <FormCom  formItem ={formItem} formLayout= {this.state.formLayout} FormConfig ={this.state.FormConfig}  />
+                    <FormCom  formItem ={formItem} formLayout= {this.state.formLayout} FormConfig ={this.state.FormConfig} >
+                        <Select ref='department'>
+                                        {
+                                            this.state.selectItem && this.state.selectItem.map((ele,index)=>{
+                                                return <Option value = {ele.id} key = {index} >{ele.name}</Option>
+                                            })
+                                        }
+                        </Select>
+                    </FormCom>
             </Fragment>
         )
     }

@@ -1,9 +1,15 @@
 import React,{ Component,Fragment} from 'react'
-import {Form, Input,Button,InputNumber,Select,Radio,message } from 'antd';
+import {Form, Input,Button,InputNumber,Select,Radio,message,DatePicker } from 'antd';
 import { submitForm } from '@api/common'
 
 import requestUrl from '@api/requestUrl'
 import SelectCom from '@c/select/index'
+import Upload from '@c/upload/index'
+
+//定义语言
+import 'moment/locale/zh-cn';
+import locale from 'antd/es/date-picker/locale/zh_CN';
+
 const { Option } = Select;
 
 class FormCom extends Component{
@@ -16,7 +22,8 @@ class FormCom extends Component{
                 'Input':'请输入',
                 'Radio':'请选择',
                 'Select':'请选择',
-                'SelectComponent':'请选择'
+                'SelectComponent':'请选择',
+                'Date':'请选择',
             }
         }
     }
@@ -78,6 +85,16 @@ class FormCom extends Component{
                 </Form.Item>
         )
     }
+
+       //插槽处理函数
+       SlotElem =(item)=>{
+        let rules = this.FormatRules(item)
+        return (
+                <Form.Item label={item.label} name={item.name} key ={item.name} rules ={rules} >
+                   {this.props.children && Array.isArray(this.props.children) ? this.props.children.filter(ele =>ele.ref === item.SlotName)[0]:this.props.children}
+                </Form.Item>
+         )
+    }
     
 
      
@@ -122,19 +139,54 @@ class FormCom extends Component{
         )
     }
 
+    //栏目 处理函数
+    ColumnElem = (item)=>{
+        return (
+            <div key={item.label}>
+                <h4 className='column-top'>{item.label}</h4>
+            </div>
+        )
+    }
+
+    //日期date 处理函数
+    DateElem = (item)=>{
+            let rules = this.FormatRules(item)
+        return (
+                <Form.Item label={item.label} name={item.name} key ={item.name} rules ={rules}>
+                    <DatePicker size={'default'} locale ={locale} format ={item.format} picker ={item.mode} />
+                </Form.Item>
+        )
+    }
+
+     //头像上传 处理函数
+     UploadElem = (item)=>{
+        let rules = this.FormatRules(item)
+            return (
+                    <Form.Item label={item.label} name={item.name} key ={item.name} rules ={rules}>
+                       <Upload name={item.name} />
+                    </Form.Item>
+            )
+        }
+
+    
+
 
     //类型判断
     initFormItem =()=>{
         const {formItem} = this.props
         if(!formItem || (formItem && formItem.length === 0)){ return false}
         let fromList = []
-        formItem.map((item)=>{
+        formItem.forEach((item)=>{  // map filter reduce  需要一个返回值 return XXX
             if(item.type === 'Input'){fromList.push( this.inputElem(item))}
             if(item.type === 'Select'){fromList.push( this.selectElem(item))}
             if(item.type === 'InputNumber'){fromList.push( this.inputNumberElem(item))}
             if(item.type === 'Radio'){fromList.push( this.radioElem(item))}
             if(item.type === 'TextArea'){fromList.push( this.TextAreaElem(item))}
             if(item.type === 'SelectComponent'){fromList.push( this.SelectComponentElem(item))}
+            if(item.type === 'Slot'){fromList.push( this.SlotElem(item))}
+            if(item.type === 'Column'){fromList.push( this.ColumnElem(item))}
+            if(item.type === 'Date'){fromList.push( this.DateElem(item))}
+            if(item.type === 'Upload'){fromList.push( this.UploadElem(item))}
         })
         return fromList
     }
@@ -189,7 +241,6 @@ class FormCom extends Component{
         }).catch(err=>{
             this.setState({loading: false})
         })
-       console.log(requestData)
       
     }
     render(){

@@ -54,6 +54,23 @@ const router =[
                 key:'/index/job/add'
             }
         ]
+    }, 
+    {
+        title:'员工管理',
+        icon:'home',
+        key:'/index/staff',
+        children:[
+            {
+                title:'员工列表',
+                icon:'home',
+                key:'/index/staff/list'
+            },
+            {
+                title:'添加员工',
+                icon:'home',
+                key:'/index/staff/add'
+            }
+        ]
     },
     {
         title:'请假',

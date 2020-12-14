@@ -109,7 +109,7 @@ class FormSearch extends Component{
         const {formItem} = this.props
         if(!formItem || (formItem && formItem.length === 0)){ return false}
         let fromList = []
-        formItem.map((item)=>{
+        formItem.forEach((item)=>{
             if(item.type === 'Input'){fromList.push( this.inputElem(item))}
             if(item.type === 'Select'){
                 item.options = Store.getState().config[item.optionsKey]
@@ -124,7 +124,6 @@ class FormSearch extends Component{
 
     //提交函数
     onFinish = (value)=>{
-        // console.log(value)
         this.props.onFinish(value)
       
     }

@@ -1,5 +1,5 @@
 import React,{ Component} from 'react'
-import {Select } from 'antd';
+import { Select } from 'antd';
 import { requestDataFn } from '@api/common.js'  //公用接口请求
 
 import requestUrl from '@api/requestUrl'  //引入接口地址

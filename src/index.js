@@ -6,9 +6,9 @@ import * as serviceWorker from './serviceWorker';
 
 
 //引入store
-import Store from '@/store/index'
+// import Store from '@/store/index'
 
-console.log(Store.getState())
+// console.log(Store.getState())
 
 ReactDOM.render(<App />,document.getElementById('root'));
 
