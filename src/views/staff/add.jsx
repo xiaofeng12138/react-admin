@@ -7,13 +7,17 @@ import locale from 'antd/es/date-picker/locale/zh_CN';
 //API
 import {submitForm} from '@api/common'
 import { GetJobDetail } from '@api/job'
-import { requestDataFn } from '@api/common.js'  //公用接口请求
+import { requestDataFn ,Upload} from '@api/common.js'  //公用接口请求
 
 import requestUrl from '@api/requestUrl'  //引入接口地址
 
 //导入select的数据
 import {face,education,nation} from '@/utils/data.js'
 import {checkPhone} from '@/utils/valid_password.js'
+
+//引入富文本
+import { Editor } from '@tinymce/tinymce-react'
+
  
 //引入form组件
 import FormCom from '@c/Form'
@@ -86,7 +90,7 @@ class StaffAdd extends React.Component{
                 },
                 {
                     type:'Upload',
-                    label:'头像上传',
+                    label:'头像',
                     name:'a34',
                     required:true,
                 },
@@ -271,6 +275,11 @@ class StaffAdd extends React.Component{
             })
         }
     }
+    
+    //富文本编辑事件
+    handleEditorChange =(value)=>{
+        console.log(value)
+    }
 
     // updateFn(value){
     //     let requestData = {...value,id:this.state.id}
@@ -282,6 +291,34 @@ class StaffAdd extends React.Component{
 
     render(){
         const { formItem } = this.state
+        const editorObj={
+            height: '800px',
+            language: 'zh_CN',
+            plugins: 'table lists link image preview code',
+            toolbar: `formatselect | code | preview | bold italic strikethrough forecolor backcolor | 
+            link image | alignleft aligncenter alignright alignjustify  | 
+            numlist bullist outdent indent`,
+            relative_urls: false,
+            file_picker_types: 'image',
+            images_upload_url: 'http',
+            image_advtab: true,
+            image_uploadtab: true,
+            images_upload_handler:(blobInfo, success, failure)=>{
+                var formData;
+                var file = blobInfo.blob();//转化为易于理解的file对象
+                formData = new FormData();
+                formData.append('file', file, file.name );//此处与源文档不一样
+                
+                Upload(formData).then(response => {
+                    console.log(response.data.data)
+                    const data = response.data.data.url;
+                    success(data);
+                }).catch((error)=>{
+                    const data = response.data
+                    failure(data.message)
+                })
+            }
+        }
         return (
             <Fragment>
                     <FormCom  formItem ={formItem} formLayout= {this.state.formLayout} FormConfig ={this.state.FormConfig} >
@@ -312,6 +349,14 @@ class StaffAdd extends React.Component{
                         </div>
                         
                     </FormCom>
+                    <Editor
+                            inline={false}
+                            selector='editorStateRef'  // 选择器
+                            apiKey='官网上申请的key值'
+                            initialValue={"1111"}
+                            init={{...editorObj}}
+                            onEditorChange={this.handleEditorChange}
+                            />
             </Fragment>
         )
     }

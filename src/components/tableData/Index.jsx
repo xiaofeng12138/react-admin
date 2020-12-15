@@ -2,7 +2,6 @@ import React , {Fragment} from 'react'
 import {message,} from 'antd';
 //引入数据类型校验
 import PropTypes from 'prop-types'
-
 import { LoadTable,DeleteTable } from '@api/common.js'
 import requestUrl from '@api/requestUrl'
 import TableCofig from './table'
@@ -138,7 +137,6 @@ class TableComponents extends React.Component{
                 {/* 搜索框内容 */}
                 <FormSearch formItem = {formSearch}  onFinish = {this.onSearch} />
 
-
                 {/* table组件 */}
                 <TableCofig 
                     columns = { thead }  
@@ -156,7 +154,6 @@ class TableComponents extends React.Component{
                 />
             </Fragment>
             )
-        
     }
 }
 

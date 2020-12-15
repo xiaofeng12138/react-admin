@@ -50,4 +50,14 @@ export function uploadToken(data){
 }
 
 
+//图片上传接口
+export function Upload(data){
+    return service.request({
+        url:'/upload/',
+        method:'POST',
+        data
+    })
+}
+
+
 

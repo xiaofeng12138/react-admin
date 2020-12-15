@@ -24,6 +24,7 @@ class FormCom extends Component{
                 'Select':'请选择',
                 'SelectComponent':'请选择',
                 'Date':'请选择',
+                'Upload':'请上传',
             }
         }
     }
