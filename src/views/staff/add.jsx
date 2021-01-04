@@ -7,7 +7,7 @@ import locale from 'antd/es/date-picker/locale/zh_CN';
 //API
 import {submitForm} from '@api/common'
 import { GetJobDetail } from '@api/job'
-import { requestDataFn ,Upload} from '@api/common.js'  //公用接口请求
+import { requestDataFn } from '@api/common.js'  //公用接口请求
 
 import requestUrl from '@api/requestUrl'  //引入接口地址
 
@@ -15,8 +15,6 @@ import requestUrl from '@api/requestUrl'  //引入接口地址
 import {face,education,nation} from '@/utils/data.js'
 import {checkPhone} from '@/utils/valid_password.js'
 
-//引入富文本
-import { Editor } from '@tinymce/tinymce-react'
 
  
 //引入form组件
@@ -25,11 +23,12 @@ class StaffAdd extends React.Component{
     constructor(){
         super()
         this.state ={
+            job_status:'',  //职位状态
             loading:false,
             id:'',
             selectItem:[],
             FormConfig:{
-                url:'jobAdd',
+                url:'staffAdd',
                 editKey:'',  //修改的key
                 initialValues:{
                     number:0,
@@ -54,15 +53,16 @@ class StaffAdd extends React.Component{
                 {
                     type:'Input',
                     label:'姓名',
-                    name:'1',
+                    name:'name',
                     required:true,
                     style:{width:'200px'},
                     placeholder:'请填写姓名'
                 },
+                
                 {
                     type:'Radio',
                     label:'性别',
-                    name:'status',
+                    name:'sex',
                     required:true,
                     options:[
                         {label:'男',value:true},
@@ -73,7 +73,7 @@ class StaffAdd extends React.Component{
                 {
                     type:'Input',
                     label:'身份证号',
-                    name:'2',
+                    name:'card_id',
                     required:true,
                     style:{width:'200px'},
                     placeholder:'请填写身份证号'
@@ -81,7 +81,7 @@ class StaffAdd extends React.Component{
                 {
                     type:'Date',
                     label:'出生年月',
-                    name:'3',
+                    name:'birthday',
                     required:true,
                     style:{width:'200px'},
                     placeholder:'请填写出生年月',
@@ -91,13 +91,13 @@ class StaffAdd extends React.Component{
                 {
                     type:'Upload',
                     label:'头像',
-                    name:'a34',
-                    required:true,
+                    name:'face_img',
+                    // required:true,
                 },
                 {
                     type:'Select',
                     label:'民族',
-                    name:'4',
+                    name:'nation',
                     required:true,
                     style:{width:'200px'},
                     options:nation,
@@ -106,7 +106,7 @@ class StaffAdd extends React.Component{
                 {
                     type:'Input',
                     label:'手机号码',
-                    name:'a1',
+                    name:'phone',
                     required:true,
                     style:{width:'200px'},
                     placeholder:'请填写手机号',
@@ -125,7 +125,7 @@ class StaffAdd extends React.Component{
                 {
                     type:'Select',
                     label:'政治面貌',
-                    name:'333',
+                    name:'political',
                     required:true,
                     style:{width:'200px'},
                     options:face,
@@ -134,7 +134,7 @@ class StaffAdd extends React.Component{
                 {
                     type:'Input',
                     label:'毕业院校',
-                    name:'5',
+                    name:'school',
                     required:true,
                     style:{width:'200px'},
                     placeholder:'请填写毕业院校'
@@ -142,7 +142,7 @@ class StaffAdd extends React.Component{
                 {
                     type:'Input',
                     label:'所学专业',
-                    name:'6',
+                    name:'major',
                     required:true,
                     style:{width:'200px'},
                     placeholder:'请填写所学专业'
@@ -150,7 +150,7 @@ class StaffAdd extends React.Component{
                 {
                     type:'Select',
                     label:'学历',
-                    name:'7',
+                    name:'education',
                     required:true,
                     style:{width:'200px'},
                     options:education,
@@ -159,7 +159,7 @@ class StaffAdd extends React.Component{
                 {
                     type:'Input',
                     label:'微信号',
-                    name:'8',
+                    name:'wechat',
                     required:true,
                     style:{width:'200px'},
                     placeholder:'请填写微信号'
@@ -167,7 +167,7 @@ class StaffAdd extends React.Component{
                 {
                     type:'Input',
                     label:'个人邮箱',
-                    name:'9',
+                    name:'email',
                     required:true,
                     style:{width:'200px'},
                     placeholder:'请填写个人邮箱'
@@ -177,39 +177,95 @@ class StaffAdd extends React.Component{
                     label:'就职信息'
                 },
                 {
-                    type:'Select',
-                    label:'职位',
-                    name:'01',
+                    type:'SelectComponent',
+                    label:'部门名称',
+                    url:'departmentListAll',
+                    propsKey:{
+                        label:'name',
+                        value:'id'
+                    },
+                    name:'departmen_id',
                     required:true,
                     style:{width:'200px'},
-                    options:[
-                        {value:'1',label:'前端'},
-                        {value:'2',label:'后端'},
-                    ],
+                    placeholder:'请选择部门'
+                },
+                {
+                    type:'SelectComponent',
+                    label:'职位名称',
+                    url:'jobListAll',
+                    propsKey:{
+                        label:'jobName',
+                        value:'jobId'
+                    },
+                    name:'job_id',
+                    required:true,
+                    style:{width:'200px'},
                     placeholder:'请选择职位'
                 },
                 {
                     type:'Slot',
                     label:'职位状态',
-                    name:'15',
+                    name:'job_status',
                     SlotName:'jobStatus',
                     required:true,
                     // style:{width:'200px'}
                 },
                 {
+                    type:'FormItemInline',
+                    label:'职位状态',
+                    name:'job_status',
+                    style:{width:'200px'},
+                    inlineItem:[
+                        {
+                            type:'Date',
+                            label:'入职日期',
+                            name:'job_entry_date',
+                            style:{width:'200px'},
+                            placeholder:'请填写姓名',
+                            col:6
+                        },
+                        {
+                            type:'Date',
+                            label:'转正日期',
+                            name:'job_formal_date',
+                            style:{width:'200px'},
+                            placeholder:'请填写姓名',
+                            col:6
+                        },
+                        {
+                            type:'Date',
+                            label:'离职日期',
+                            name:'job_quit_date',
+                            style:{width:'200px'},
+                            placeholder:'请填写姓名',
+                            col:6
+                        },
+                       
+                    ]
+                },
+                {
                     type:'Input',
                     label:'公司邮箱',
-                    name:'19',
+                    name:'company_email',
                     required:true,
                     style:{width:'200px'},
                     placeholder:'请填写公司邮箱'
                 },
                 {
-                    type:'TextArea',
-                    label:'职位描述',
-                    name:'content',
-                    row:6,
-                    style:{width:'500px'}
+                    type:'Editor',
+                    label:'描述',
+                    name:'introduce',
+                    style:{width:'800px'},
+                },
+                {
+                    type:'Radio',
+                    label:'禁启用',
+                    name:'status',
+                    required:true,
+                    options:[
+                        {label:'启用',value:true},
+                        {label:'禁用',value:false},
+                    ],
                 },
             ]
         }
@@ -275,11 +331,12 @@ class StaffAdd extends React.Component{
             })
         }
     }
-    
-    //富文本编辑事件
-    handleEditorChange =(value)=>{
-        console.log(value)
+    onChange = (e)=>{
+        this.setState({
+            job_status: e.target.value
+        })
     }
+    
 
     // updateFn(value){
     //     let requestData = {...value,id:this.state.id}
@@ -290,73 +347,39 @@ class StaffAdd extends React.Component{
     // }
 
     render(){
-        const { formItem } = this.state
-        const editorObj={
-            height: '800px',
-            language: 'zh_CN',
-            plugins: 'table lists link image preview code',
-            toolbar: `formatselect | code | preview | bold italic strikethrough forecolor backcolor | 
-            link image | alignleft aligncenter alignright alignjustify  | 
-            numlist bullist outdent indent`,
-            relative_urls: false,
-            file_picker_types: 'image',
-            images_upload_url: 'http',
-            image_advtab: true,
-            image_uploadtab: true,
-            images_upload_handler:(blobInfo, success, failure)=>{
-                var formData;
-                var file = blobInfo.blob();//转化为易于理解的file对象
-                formData = new FormData();
-                formData.append('file', file, file.name );//此处与源文档不一样
-                
-                Upload(formData).then(response => {
-                    console.log(response.data.data)
-                    const data = response.data.data.url;
-                    success(data);
-                }).catch((error)=>{
-                    const data = response.data
-                    failure(data.message)
-                })
-            }
-        }
+        
         return (
             <Fragment>
-                    <FormCom  formItem ={formItem} formLayout= {this.state.formLayout} FormConfig ={this.state.FormConfig} >
+                    <FormCom  formItem ={this.state.formItem} formLayout= {this.state.formLayout} FormConfig ={this.state.FormConfig} >
                         <div  ref='jobStatus'>
+                        <Radio.Group value = {this.state.job_status} onChange = {this.onChange} >
                         <Row gutter={16}>
                             <Col className="gutter-row" span={8}>
                                 <div >
-                                    <Radio value={1}>在职</Radio>
+                                    <Radio value={'online'}>在职</Radio>
                                     <div className='mt-15'></div>
                                     <DatePicker size={'default'} locale ={locale} />
                                 </div>
                             </Col>
                             <Col className="gutter-row" span={8}>
-                            <div >
-                                    <Radio value={1}>离职</Radio>
-                                    <div className='mt-15'></div>
-                                    <DatePicker size={'default'} locale ={locale} />
+                                <div >
+                                        <Radio value={'quit'}>离职</Radio>
+                                        <div className='mt-15'></div>
+                                        <DatePicker size={'default'} locale ={locale} />
                                 </div>
                             </Col>
                             <Col className="gutter-row" span={8}>
-                            <div >
-                                    <Radio value={1}>休假</Radio>
-                                    <div className='mt-15'></div>
-                                    <DatePicker size={'default'} locale ={locale} />
+                                <div >
+                                        <Radio value={'vacation'}>休假</Radio>
+                                        <div className='mt-15'></div>
+                                        <DatePicker size={'default'} locale ={locale} />
                                 </div>
                             </Col>
-                        </Row>
+                         </Row>
+                        </Radio.Group>
                         </div>
                         
                     </FormCom>
-                    <Editor
-                            inline={false}
-                            selector='editorStateRef'  // 选择器
-                            apiKey='官网上申请的key值'
-                            initialValue={"1111"}
-                            init={{...editorObj}}
-                            onEditorChange={this.handleEditorChange}
-                            />
             </Fragment>
         )
     }

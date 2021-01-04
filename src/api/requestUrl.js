@@ -6,6 +6,8 @@ const requestUrl ={
     'getDepartmentList':'/department/departmentList/',  //获取部门列表新街口
     'departmentListDelete':'/department/delete/',
     'departmentAdd':'/department/add/',
+    'departmentListAll':'/department/listAll/',
+    
 
 
     //职位管理API
@@ -14,6 +16,14 @@ const requestUrl ={
     'jobAdd':'/job/add/',
     'jobEdit':'/job/edit/',
     'jobListDelete':'/job/delete/',
+    'jobListAll':'/job/listAll/',
+
+
+
+    //员工管理
+    
+    'staffAdd':'/staff/add/',
+    
 }
 
 export default requestUrl

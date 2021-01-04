@@ -60,4 +60,16 @@ export function Upload(data){
 }
 
 
+//获取部门全部列表无分页
+export function departmentListAll(data){
+    return service.request({
+        url:'/department/listAll/',
+        method:'POST',
+        data
+    })
+}
+
+
+
+
 

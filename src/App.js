@@ -12,12 +12,12 @@ import  PrivateRouter from './views/layout/privateRouter/index'
 function App() {
   return (
     <div>
-    <HashRouter>
-         <Switch>
-            <Route exact component={Login} path='/' />
-            <PrivateRouter component={Index} path='/index' />
-         </Switch>
-    </HashRouter>
+      <HashRouter>
+          <Switch>
+              <Route exact component={Login} path='/' />
+              <PrivateRouter component={Index} path='/index' />
+          </Switch>
+      </HashRouter>
     </div>
   );
 }

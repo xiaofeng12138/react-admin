@@ -50,7 +50,7 @@ class UploadCom extends Component{
     triggerChange = (changeValue)=>{
          const onChange = this.props.onChange   //这是一个从FormItem 传过来的一个函数
          if(onChange){
-            onChange({[this.state.name]:changeValue})  //将值返回给form组件
+            onChange(changeValue)  //将值返回给form组件
          }
     }
 
