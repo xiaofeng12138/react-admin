@@ -27,6 +27,7 @@ class FormCom extends Component{
                 'Date':'请选择',
                 'Upload':'请上传',
                 'Editor':'请输入',
+                'Slot':'请选择'
             }
         }
     }
@@ -224,7 +225,7 @@ class FormCom extends Component{
 
     //创建表单控件函数
     createContral=(item)=>{
-           if(item.type === 'Input'){ return  this.inputElem(item)}
+            if(item.type === 'Input'){ return  this.inputElem(item)}
             if(item.type === 'Select'){return  this.selectElem(item)}
             if(item.type === 'InputNumber'){return  this.inputNumberElem(item)}
             if(item.type === 'Radio'){return  this.radioElem(item)}
@@ -260,6 +261,7 @@ class FormCom extends Component{
 
     //提交函数
     onFinish = (value)=>{
+        console.log(value)
         //如果外面有传函数则调用外面的，否则调用自己的提交函数
         if(this.props.onFinish){
             this.props.onFinish(value)

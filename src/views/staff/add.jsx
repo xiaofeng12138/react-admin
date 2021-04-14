@@ -210,39 +210,39 @@ class StaffAdd extends React.Component{
                     required:true,
                     // style:{width:'200px'}
                 },
-                {
-                    type:'FormItemInline',
-                    label:'职位状态',
-                    name:'job_status',
-                    style:{width:'200px'},
-                    inlineItem:[
-                        {
-                            type:'Date',
-                            label:'入职日期',
-                            name:'job_entry_date',
-                            style:{width:'200px'},
-                            placeholder:'请填写姓名',
-                            col:6
-                        },
-                        {
-                            type:'Date',
-                            label:'转正日期',
-                            name:'job_formal_date',
-                            style:{width:'200px'},
-                            placeholder:'请填写姓名',
-                            col:6
-                        },
-                        {
-                            type:'Date',
-                            label:'离职日期',
-                            name:'job_quit_date',
-                            style:{width:'200px'},
-                            placeholder:'请填写姓名',
-                            col:6
-                        },
+                // {
+                //     type:'FormItemInline',
+                //     label:'职位状态',
+                //     name:'job_status1',
+                //     style:{width:'200px'},
+                //     inlineItem:[
+                //         {
+                //             type:'Date',
+                //             label:'入职日期',
+                //             name:'job_entry_date',
+                //             style:{width:'200px'},
+                //             placeholder:'请填写姓名',
+                //             col:6
+                //         },
+                //         {
+                //             type:'Date',
+                //             label:'转正日期',
+                //             name:'job_formal_date',
+                //             style:{width:'200px'},
+                //             placeholder:'请填写姓名',
+                //             col:6
+                //         },
+                //         {
+                //             type:'Date',
+                //             label:'离职日期',
+                //             name:'job_quit_date',
+                //             style:{width:'200px'},
+                //             placeholder:'请填写姓名',
+                //             col:6
+                //         },
                        
-                    ]
-                },
+                //     ]
+                // },
                 {
                     type:'Input',
                     label:'公司邮箱',
@@ -251,11 +251,17 @@ class StaffAdd extends React.Component{
                     style:{width:'200px'},
                     placeholder:'请填写公司邮箱'
                 },
+                // {
+                //     type:'Editor',
+                //     label:'描述',
+                //     name:'introduce',
+                //     style:{width:'800px'},
+                // },
                 {
-                    type:'Editor',
+                    type:'Input',
                     label:'描述',
                     name:'introduce',
-                    style:{width:'800px'},
+                    style:{width:'200px'},
                 },
                 {
                     type:'Radio',
@@ -286,6 +292,7 @@ class StaffAdd extends React.Component{
     }
     
     onFinish = (value )=>{
+        console.log(333)
         this.state.id ? this.updateFn(value) : this.addFn(value)
     }
     
@@ -350,7 +357,7 @@ class StaffAdd extends React.Component{
         
         return (
             <Fragment>
-                    <FormCom  formItem ={this.state.formItem} formLayout= {this.state.formLayout} FormConfig ={this.state.FormConfig} >
+                    <FormCom  formItem ={this.state.formItem} formLayout= {this.state.formLayout} FormConfig ={this.state.FormConfig}  submit = {this.onFinish}>
                         <div  ref='jobStatus'>
                         <Radio.Group value = {this.state.job_status} onChange = {this.onChange} >
                         <Row gutter={16}>

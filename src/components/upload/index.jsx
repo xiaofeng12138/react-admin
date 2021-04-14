@@ -19,7 +19,11 @@ class UploadCom extends Component{
     componentDidMount(){
         this.getQiNiuToken()
     }
-   
+
+    //页面卸载的时候
+    componentWillUnmount(){
+        //  localStorage.removeItem('')
+    }
 
     //获取七牛云token
     getQiNiuToken=()=>{
@@ -81,6 +85,7 @@ class UploadCom extends Component{
             this.setState({ loading: true });
             return;
           }
+          console.log(info)
           if (info.file.status === 'done') {
               const fileInfo = info.file.response
               const imageUrl = `http://llc.xiaofenggege.com/${fileInfo.key}`;
