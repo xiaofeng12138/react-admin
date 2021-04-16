@@ -34,14 +34,27 @@ class UploadCom extends Component{
          }
          return uploadToken(requsetData).then(res=>{
              return res.data.data.token
-            //  this.setState({
-            //     uploadKey:{
-            //        token:res.data.data.token
-            //     }
-            //  })
+                //  this.setState({
+                //     uploadKey:{
+                //        token:res.data.data.token
+                //     }
+                //  })
          })
     }
+ 
 
+       //监听数值变化的生命周期函数
+       static getDerivedStateFromProps(nextProps,prevProps){  //1、静态的 无法读取this.state   2、必须有返回值
+        let { value } = nextProps
+        if(!value) {return false}
+        if(value !== prevProps[value] ){
+            return {
+                imageUrl:value   //返回的值直接返回到 this.state 里面
+            }
+        }
+         //直接返回放在最后面
+         return null
+    }
    
     //select change 事件
     onChange =(e)=>{

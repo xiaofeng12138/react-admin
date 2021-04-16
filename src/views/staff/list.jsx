@@ -3,7 +3,7 @@ import React ,{Fragment} from 'react'
 import { Link} from 'react-router-dom'
 import {Button,Switch ,message} from 'antd';
 import TableComponents from '@c/tableData/Index'
-import {Status} from '@api/job.js'
+import {Status} from '@api/staff.js'
 
 class StaffList extends React.Component{
     constructor(){
@@ -12,14 +12,20 @@ class StaffList extends React.Component{
             pageSize:10,
             pageNumber:1,
             tableConfig:{
-                url:'jobList',  //请求地址
+                url:'staffList',  //请求地址
                 method:'POST',  //请求方式 选填 默认使用post
                 checkBox:true,  //是否显示多选框 选填
-                rowKey:'jobId',   //table的绑定值
+                rowKey:'staff_id',   //table的绑定值
                 batchButton:true,
                 thead:[  //表头
-                    {title: '职位名称', dataIndex:'jobName', align: 'center', key: 'jobName',},
+                    {title: '姓名', dataIndex:'full_name', align: 'center', key: 'full_name',},
                     {title: '部门名称', dataIndex:'name', align: 'center', key: 'name',},
+                    {title: '职位名称', dataIndex:'jobName', align: 'center', key: 'jobName',},
+                    {title: '公司邮箱', dataIndex:'company_email', align: 'center', key: 'company_email',},
+                    {title: '入职日期', dataIndex:'job_formal_date', align: 'center', key: 'job_formal_date',},
+                    {title: '转正日期', dataIndex:'job_entry_date', align: 'center', key: 'job_entry_date',},
+                    {title: '离职日期', dataIndex:'job_quit_date', align: 'center', key: 'job_quit_date',},
+                    {title: '手机号', dataIndex:'phone', align: 'center', key: 'phone',},
                     { 
                       title: '禁启用',
                       dataIndex:'status',
@@ -35,9 +41,9 @@ class StaffList extends React.Component{
                                 <div className='inline-button'>
                                     {/* <Button type='primary' onClick={()=>this.openConfirm(rowData.id)}> */}
                                     <Button type='primary'>
-                                        <Link to={{pathname:"/index/job/add",state:{id:rowData.jobId}}}>编辑</Link>
+                                        <Link to={{pathname:"/index/staff/add",state:{id:rowData.staff_id}}}>编辑</Link>
                                     </Button>
-                                    <Button type='danger' onClick={() =>{this.delete(rowData.jobId)}} >删除</Button>
+                                    <Button type='danger' onClick={() =>{this.delete(rowData.staff_id)}} >删除</Button>
                                 </div>
                             )
                         }
@@ -60,7 +66,7 @@ class StaffList extends React.Component{
     //修改状态
     changeStatus =(rowData)=>{
         const requsetData ={
-            id:rowData.jobId,
+            id:rowData.staff_id,
             status:!rowData.status
         }
         Status(requsetData).then(res=>{

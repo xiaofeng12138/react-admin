@@ -1,12 +1,10 @@
 import React,{Fragment} from 'react'
-import {message,Row,Col,Radio,DatePicker} from 'antd';
+import {message} from 'antd';
 //定义语言
-import 'moment/locale/zh-cn';
-import locale from 'antd/es/date-picker/locale/zh_CN';
 
 //API
 import {submitForm} from '@api/common'
-import { GetJobDetail } from '@api/job'
+import { GetStaffDetail,Edit } from '@api/staff'
 import { requestDataFn } from '@api/common.js'  //公用接口请求
 
 import requestUrl from '@api/requestUrl'  //引入接口地址
@@ -15,6 +13,8 @@ import requestUrl from '@api/requestUrl'  //引入接口地址
 import {face,education,nation} from '@/utils/data.js'
 import {checkPhone} from '@/utils/valid_password.js'
 
+//引入处理时间的函数
+import moment from 'moment';
 
  
 //引入form组件
@@ -202,47 +202,47 @@ class StaffAdd extends React.Component{
                     style:{width:'200px'},
                     placeholder:'请选择职位'
                 },
-                {
-                    type:'Slot',
-                    label:'职位状态',
-                    name:'job_status',
-                    SlotName:'jobStatus',
-                    required:true,
-                    // style:{width:'200px'}
-                },
                 // {
-                //     type:'FormItemInline',
+                //     type:'Slot',
                 //     label:'职位状态',
-                //     name:'job_status1',
-                //     style:{width:'200px'},
-                //     inlineItem:[
-                //         {
-                //             type:'Date',
-                //             label:'入职日期',
-                //             name:'job_entry_date',
-                //             style:{width:'200px'},
-                //             placeholder:'请填写姓名',
-                //             col:6
-                //         },
-                //         {
-                //             type:'Date',
-                //             label:'转正日期',
-                //             name:'job_formal_date',
-                //             style:{width:'200px'},
-                //             placeholder:'请填写姓名',
-                //             col:6
-                //         },
-                //         {
-                //             type:'Date',
-                //             label:'离职日期',
-                //             name:'job_quit_date',
-                //             style:{width:'200px'},
-                //             placeholder:'请填写姓名',
-                //             col:6
-                //         },
-                       
-                //     ]
+                //     name:'job_status',
+                //     SlotName:'jobStatus',
+                //     required:true,
+                //     // style:{width:'200px'}
                 // },
+                 {
+                    type:'FormItemInline',
+                    label:'职位状态',
+                    name:'job_status1',
+                    style:{width:'200px'},
+                    inlineItem:[
+                        {
+                            type:'Date',
+                            label:'入职日期',
+                            name:'job_entry_date',
+                            style:{width:'200px'},
+                            placeholder:'请选择日期',
+                            col:6
+                        },
+                        {
+                            type:'Date',
+                            label:'转正日期',
+                            name:'job_formal_date',
+                            style:{width:'200px'},
+                            placeholder:'请选择日期',
+                            col:6
+                        },
+                        {
+                            type:'Date',
+                            label:'离职日期',
+                            name:'job_quit_date',
+                            style:{width:'200px'},
+                            placeholder:'请选择日期',
+                            col:6
+                        },
+                       
+                    ]
+                },
                 {
                     type:'Input',
                     label:'公司邮箱',
@@ -292,7 +292,6 @@ class StaffAdd extends React.Component{
     }
     
     onFinish = (value )=>{
-        console.log(333)
         this.state.id ? this.updateFn(value) : this.addFn(value)
     }
     
@@ -326,13 +325,22 @@ class StaffAdd extends React.Component{
     getDetailedFn(){
         let id = this.state.id
         if(id){
-            GetJobDetail({id}).then(res=>{
+            GetStaffDetail({id}).then(res=>{
+              const data = res.data.data
+              const basicData ={
+                birthday:data.birthday ? moment(data.birthday) : null,
+                job_entry_date:data.job_entry_date ? moment(data.job_entry_date) : null,
+                job_formal_date:data.job_formal_date ? moment(data.job_formal_date) : null,
+                job_quit_date:data.job_quit_date ? moment(data.job_quit_date) : null,
+              }
+
+
                 this.setState({
                    FormConfig:{
                         ...this.state.FormConfig,
-                        setFieldsValue:res.data.data,
-                        url:'jobEdit',
-                        editKey:'jobId'
+                        setFieldsValue:{...data,...basicData},
+                        url:'staffEdit',
+                        editKey:'staff_id'
                    }
                 })
             })
@@ -345,46 +353,50 @@ class StaffAdd extends React.Component{
     }
     
 
-    // updateFn(value){
-    //     let requestData = {...value,id:this.state.id}
-    //     Editdpartment(requestData).then(res=>{
-    //         message.success(res.data.message)
-    //         this.refs.Form.resetFields()
-    //     })
-    // }
+    updateFn(value){
+        let requestData = {...value,id:this.state.id}
+        requestData.birthday = new Date(requestData.birthday)
+        requestData.job_entry_date = new Date(requestData.job_entry_date)
+        requestData.job_formal_date = new Date(requestData.job_formal_date)
+        requestData.job_quit_date = new Date(requestData.job_quit_date)
+
+        Edit(requestData).then(res=>{
+            message.success(res.data.message)
+        })
+    }
 
     render(){
         
         return (
             <Fragment>
-                    <FormCom  formItem ={this.state.formItem} formLayout= {this.state.formLayout} FormConfig ={this.state.FormConfig}  submit = {this.onFinish}>
-                        <div  ref='jobStatus'>
-                        <Radio.Group value = {this.state.job_status} onChange = {this.onChange} >
-                        <Row gutter={16}>
-                            <Col className="gutter-row" span={8}>
-                                <div >
-                                    <Radio value={'online'}>在职</Radio>
-                                    <div className='mt-15'></div>
-                                    <DatePicker size={'default'} locale ={locale} />
-                                </div>
-                            </Col>
-                            <Col className="gutter-row" span={8}>
-                                <div >
-                                        <Radio value={'quit'}>离职</Radio>
-                                        <div className='mt-15'></div>
-                                        <DatePicker size={'default'} locale ={locale} />
-                                </div>
-                            </Col>
-                            <Col className="gutter-row" span={8}>
-                                <div >
-                                        <Radio value={'vacation'}>休假</Radio>
-                                        <div className='mt-15'></div>
-                                        <DatePicker size={'default'} locale ={locale} />
-                                </div>
-                            </Col>
-                         </Row>
-                        </Radio.Group>
-                        </div>
+                    <FormCom  formItem ={this.state.formItem} formLayout= {this.state.formLayout} FormConfig ={this.state.FormConfig}  onFinish = {this.onFinish}>
+                        {/* <div  ref='jobStatus'>  插槽
+                                <Radio.Group value = {this.state.job_status} onChange = {this.onChange} >
+                                <Row gutter={16}>
+                                    <Col className="gutter-row" span={8}>
+                                        <div >
+                                            <Radio value={'online'}>在职</Radio>
+                                            <div className='mt-15'></div>
+                                            <DatePicker size={'default'} locale ={locale} />
+                                        </div>
+                                    </Col>
+                                    <Col className="gutter-row" span={8}>
+                                        <div >
+                                                <Radio value={'quit'}>离职</Radio>
+                                                <div className='mt-15'></div>
+                                                <DatePicker size={'default'} locale ={locale} />
+                                        </div>
+                                    </Col>
+                                    <Col className="gutter-row" span={8}>
+                                        <div >
+                                                <Radio value={'vacation'}>休假</Radio>
+                                                <div className='mt-15'></div>
+                                                <DatePicker size={'default'} locale ={locale} />
+                                        </div>
+                                    </Col>
+                                </Row>
+                                </Radio.Group>
+                        </div> */}
                         
                     </FormCom>
             </Fragment>

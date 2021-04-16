@@ -28,8 +28,6 @@ class SelectCom extends Component{
     
     //监听数值变化的生命周期函数
     static getDerivedStateFromProps(nextProps,prevProps){  //1、静态的 无法读取this.state   2、必须有返回值
-
-       
         let { value,name } = nextProps
         //判断value的 类型  是数字类型 还是json 对象
         if(Object.prototype.toString.call(value) === "[object Object]"){
@@ -42,10 +40,6 @@ class SelectCom extends Component{
                 value:value   //返回的值直接返回到 this.state 里面
             }
         }
-         
-
-
-
          //直接返回放在最后面
          return null
     }

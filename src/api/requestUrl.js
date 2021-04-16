@@ -23,6 +23,12 @@ const requestUrl ={
     //员工管理
     
     'staffAdd':'/staff/add/',
+    'staffList':'/staff/list/',
+    'staffListDelete':'/staff/delete/',
+
+
+    //用户管理
+    'userList':'/user/list/',
     
 }
 

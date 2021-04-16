@@ -6,6 +6,8 @@ import requestUrl from '@api/requestUrl'
 import SelectCom from '@c/select/index'
 import Upload from '@c/upload/index'
 import Editor from '@c/editor/index'
+// import PropTypes from 'prop-types'
+
 
 //定义语言
 import 'moment/locale/zh-cn';
@@ -28,14 +30,17 @@ class FormCom extends Component{
                 'Upload':'请上传',
                 'Editor':'请输入',
                 'Slot':'请选择'
-            }
+            },
         }
+        this.form = React.createRef()  //固定写法 用于表单重置
     }
 
-
+    componentDidMount(){
+        this.props.onRef && this.props.onRef(this) //传出this
+    }
     //类似于 vue的watch 监听功能
     componentWillReceiveProps({FormConfig}){
-          this.refs.Form.setFieldsValue(FormConfig.setFieldsValue)
+          this.form.current.setFieldsValue(FormConfig.setFieldsValue)
     }
 
     //校验处理函数
@@ -166,7 +171,7 @@ class FormCom extends Component{
      UploadElem = (item)=>{
         let rules = this.FormatRules(item)
             return (
-                    <Form.Item label={item.label} name={item.name} key ={item.name} rules ={rules}>
+                    <Form.Item label={item.label} name={item.name} key ={item.name} rules ={rules} >
                        <Upload name={item.name} />
                     </Form.Item>
             )
@@ -189,7 +194,7 @@ class FormCom extends Component{
                     <Row key={item.name}> 
                         <Col span={2} className ='ant-form-item' style={{textAlign:'right'}} >
                             <div className='ant-form-item-label'>
-                                <label  className='ant-form-item-required' title='姓名'>{item.label}</label>
+                                <label  className='ant-form-item-required' title={item.label}>{item.label}</label>
                             </div>
                         </Col>
                         <Col  span={22} >
@@ -261,13 +266,11 @@ class FormCom extends Component{
 
     //提交函数
     onFinish = (value)=>{
-        console.log(value)
         //如果外面有传函数则调用外面的，否则调用自己的提交函数
         if(this.props.onFinish){
             this.props.onFinish(value)
             return false
         }
-
         //数据格式化
         // 
         // if(formatKey && value[formatKey]){
@@ -286,24 +289,42 @@ class FormCom extends Component{
         submitForm(requestData).then(res=>{
             message.success(res.data.message)
             this.setState({loading: false})
-            this.refs.Form.resetFields()
+            this.onReset()
         }).catch(err=>{
             this.setState({loading: false})
         })
-      
+    }
+
+    onReset =()=>{
+        this.form.current.resetFields()
     }
     render(){
+      
         return (
             <Fragment>
-                    <Form ref ='Form' onFinish={this.onFinish} {...this.props.formLayout}  initialValues = {this.props.FormConfig.initialValues}>
+                    <Form ref ={this.form} onFinish={this.onFinish} {...this.props.formLayout}  initialValues = {this.props.FormConfig.initialValues}>
                       {this.initFormItem()}
-                        <Form.Item>
-                                <Button loading={this.state.loading}  type="primary" htmlType="submit">提 交</Button>
-                        </Form.Item>
+                      <Row> 
+                               <Col span={this.props.formLayout.labelCol.span}></Col>
+                               <Col span={this.props.formLayout.wrapperCol.span}>
+                                     <Button loading={this.state.loading}  type="primary" htmlType="submit">提 交</Button>
+                               </Col>
+                     </Row>
                     </Form>
             </Fragment>
         )
     }
+}
+
+// FormCom.prototype = {
+//     FormConfig:PropTypes.Object,
+//     submitButton:PropTypes.bool
+// }
+
+// //设置默认值
+FormCom.defaultProps ={
+    FormConfig:{},
+    submitButton:true
 }
 
 export default FormCom

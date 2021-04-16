@@ -1,5 +1,5 @@
 import React , {Fragment} from 'react'
-import {message,} from 'antd';
+import {message,Row,Col} from 'antd';
 //引入数据类型校验
 import PropTypes from 'prop-types'
 import { LoadTable,DeleteTable } from '@api/common.js'
@@ -56,7 +56,6 @@ class TableComponents extends React.Component{
     }
 
     onChangeCurrent =(value)=>{
-        console.log(value)
         this.setState({
             pageNumber:value
         },()=>{
@@ -135,7 +134,15 @@ class TableComponents extends React.Component{
         return (
             <Fragment>
                 {/* 搜索框内容 */}
-                <FormSearch formItem = {formSearch}  onFinish = {this.onSearch} />
+                <Row>
+                    <Col span={18}> <FormSearch formItem = {formSearch}  onFinish = {this.onSearch} /></Col>
+                    <Col span={6}> 
+                       <div className='pull-right'>
+                           {this.props.children}
+                       </div>
+                    </Col>
+                </Row>
+               
 
                 {/* table组件 */}
                 <TableCofig 
