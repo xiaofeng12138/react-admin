@@ -18,3 +18,22 @@ export function Status(data){
     })
 }
 
+
+/**用户详情*/
+export function GetDetailed(data){
+    return service.request({
+        url:"/user/detailed/",
+        method:'POST',
+        data
+    })
+}
+
+
+/**用户编辑*/
+export function editUser(data){
+    return service.request({
+        url:"/user/edit/",
+        method:'POST',
+        data
+    })
+}

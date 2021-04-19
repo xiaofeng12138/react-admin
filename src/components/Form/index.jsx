@@ -69,8 +69,8 @@ class FormCom extends Component{
     inputElem =(item)=>{
         let rules = this.FormatRules(item)
         return (
-                <Form.Item label={item.label} name={item.name} key ={item.name} rules ={rules}>
-                    <Input style={item.style} placeholder={item.placeholder} />
+                <Form.Item label={item.label} name={item.name} key ={item.name} rules ={rules} shouldUpdate = { item.shouldUpdate || false}>
+                    <Input type = {item.value_Type || 'text'} style={item.style} placeholder={item.placeholder} />
                 </Form.Item>
         )
     }

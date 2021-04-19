@@ -64,7 +64,7 @@ class LoginForm extends React.Component{
 
       toggleForm=()=>{
           //调用父组件的方法
-       this.props.switchForm('register')
+        this.props.switchForm('register')
     }
 
     render(){

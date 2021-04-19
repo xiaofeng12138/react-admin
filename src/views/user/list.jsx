@@ -1,6 +1,5 @@
 
 import React ,{Fragment} from 'react'
-import { Link} from 'react-router-dom'
 import {Button,Switch ,message} from 'antd';
 import TableComponents from '@c/tableData/Index'
 import {Status} from '@api/user.js'
@@ -22,7 +21,7 @@ class StaffList extends React.Component{
                     {title: '用户名', dataIndex:'username', align: 'center', key: 'username',},
                     {title: '真实姓名', dataIndex:'truename', align: 'center', key: 'truename',},
                     {title: '电话号码', dataIndex:'phone', align: 'center', key: 'phone',},
-                    {title: '角色', dataIndex:'role', align: 'center', key: 'role',},
+                    {title: '角色', dataIndex:'role_str', align: 'center', key: 'role_str',},
                     { 
                       title: '禁启用',
                       dataIndex:'status',
@@ -36,10 +35,7 @@ class StaffList extends React.Component{
                         render:(text,rowData)=>{
                             return (
                                 <div className='inline-button'>
-                                    {/* <Button type='primary' onClick={()=>this.openConfirm(rowData.id)}> */}
-                                    <Button type='primary'>
-                                        <Link to={{pathname:"/index/staff/add",state:{id:rowData.id}}}>编辑</Link>
-                                    </Button>
+                                    <Button type='primary' onClick = {()=>this.handEditClick(rowData.id)}>编辑</Button>
                                     <Button type='danger' onClick={() =>{this.delete(rowData.id)}} >删除</Button>
                                 </div>
                             )
@@ -60,6 +56,14 @@ class StaffList extends React.Component{
         this.TableComponent = ref
     }
 
+    //编辑
+    handEditClick =(id)=>{
+        this.openUserModal({
+            status:true,
+            User_id:id
+        })
+    }
+
      //获取弹窗子组件实例
      getUesrAddModal = (ref)=>{
         this.child = ref
@@ -68,7 +72,7 @@ class StaffList extends React.Component{
     //修改状态
     changeStatus =(rowData)=>{
         const requsetData ={
-            id:rowData.staff_id,
+            id:rowData.id,
             status:!rowData.status
         }
         Status(requsetData).then(res=>{
@@ -80,16 +84,16 @@ class StaffList extends React.Component{
     delete(id){
         this.TableComponent.handerDelete(id)
     }
-    openUserModal =()=>{
-        this.child.visibleModal(true)
+    openUserModal =(params)=>{
+        this.child.visibleModal(params)
     }
 
 
     render(){
         return (
             <Fragment>
-                  <TableComponents onRef= {this.getChildRef} batchButton = {true} config = {this.state.tableConfig}>
-                    <Button ref='userAdd' type='primary' onClick={this.openUserModal}>新增用户</Button>
+                  <TableComponents onRef= {this.getChildRef} batchButton = {true} config = {this.state.tableConfig} >
+                    <Button ref='userAdd' type='primary' onClick={()=>this.openUserModal({status:true})}>新增用户</Button>
                   </TableComponents>
                   <UserAddModal onRef ={this.getUesrAddModal} />
                 

@@ -1,14 +1,17 @@
 import React,{ Component } from 'react'
-import { message, Modal } from 'antd';
+import { message, Modal ,Checkbox } from 'antd';
 import FormCom from '@c/Form/index'
 import {checkPhone} from '@/utils/valid_password.js'
-import { UserAdd } from '../../api/user';
+import { UserAdd,GetDetailed,editUser } from '../../api/user';
+import {GetUserRole} from '@/api/role'
 class UserAddModal extends Component{
 
     constructor(props){
         super(props)
         this.state ={
+            roleOptions:[],
             isModalVisible:false,
+            showTitle:'用户新增',
             FormConfig:{
                 url:'departmentAdd',
                 initialValues:{
@@ -31,7 +34,9 @@ class UserAddModal extends Component{
                     type:'Input',
                     label:'密码',
                     name:'password',
-                    required:true,
+                    required:false,
+                    value_Type:'password',
+                    shouldUpdate:true,
                     style:{width:'200px'},
                     placeholder:'请输入密码',
                 },
@@ -64,7 +69,16 @@ class UserAddModal extends Component{
                         {label:'禁用',value:false},
                     ],
                 },
-            ]
+                {
+                    type:'Slot',
+                    label:'权限',
+                    name:'role',
+                    // required:true,
+                    slotName:'roleCheckBox'
+                },
+            ],
+            user_id:"",
+            chooseRoleArr:[]
         }
     }
 
@@ -74,13 +88,67 @@ class UserAddModal extends Component{
 
     handleOk=()=>{}
 
-    visibleModal =(status)=>{
-        
-       
-        this.setState({
-            isModalVisible: status
+    visibleModal =(params)=>{
+        if(params.User_id){
+            this.setState({
+                isModalVisible: params.status,
+                user_id:params.User_id,
+                showTitle:"编辑用户"
+            },()=>{
+                this.getDetailedFn()
+                this.updateItem(params.User_id)
+            })
+        }else{
+            this.setState({
+                isModalVisible: params.status,
+                user_id:'',
+                showTitle:"新增用户"
+            },)
+        }
+        this.GetUserFn()
+    }
+
+    //获取用户权限函数
+    GetUserFn =()=>{
+        GetUserRole().then(res=>{
+            let data = res.data.data
+            this.setState({
+                roleOptions:data
+            })
         })
-       
+    }
+
+    //修改数据对象
+    updateArrayItem = (index,key)=>{
+        this.setState({
+            formItem : this.state.formItem.map((item,_index )=>index.includes(_index) ? {...item,...key[index] }: item )
+        })
+    }
+
+    //修改对象
+    updateItem = (id)=>{
+        this.updateArrayItem(
+            [2],
+            {
+               2:{
+                   required: id ? false : true,
+               }
+            }
+        )
+    }
+
+    //获取详情
+    getDetailedFn =()=>{
+        if(! this.state.user_id ) return false
+        GetDetailed({id:this.state.user_id}).then(res=>{
+            let newStr = res.data.data.role
+            this.setState({
+                FormConfig:{
+                    setFieldsValue:res.data.data,
+                }   ,
+                chooseRoleArr:newStr ? newStr.split(','):[] 
+            })
+        })
     }
 
     handleCancel=()=>{
@@ -89,28 +157,62 @@ class UserAddModal extends Component{
     }
 
     onFinish=(value)=>{
-        UserAdd(value).then(res=>{
-            message.success(res.data.message)
-            this.visibleModal(false)
-        })
+        this.state.user_id ? this.handEdit(value) : this.AddFn(value)
+        
     }
     onFormRef=(ref)=>{
        this.child = ref
     }
 
+    AddFn =(value)=>{
+        let roleStr = this.state.chooseRoleArr ? this.state.chooseRoleArr.join():''
+        value.role = roleStr
+        UserAdd(value).then(res=>{
+                message.success(res.data.message)
+                this.visibleModal(false)
+            })
+    }
+
+    handEdit =(value)=>{
+        let roleStr = this.state.chooseRoleArr ? this.state.chooseRoleArr.join():''
+        value.id = this.state.user_id
+        value.role = roleStr
+        editUser(value).then(res=>{
+            message.success(res.data.message)
+            this.visibleModal(false)
+        })
+    }
+
+    //rolechange时间
+    onChange= (value)=>{
+        this.setState({
+            chooseRoleArr: value
+        })
+    }
+
 
    
     render(){
-        const {isModalVisible } = this.state
+        const {isModalVisible,showTitle,roleOptions ,chooseRoleArr} = this.state
             return (
-                <Modal title="用户添加" visible={isModalVisible} onOk={this.handleOk} onCancel={this.handleCancel} footer ={null}>
+                <Modal  title={showTitle} visible={isModalVisible} onOk={this.handleOk} onCancel={this.handleCancel} footer ={null} maskClosable={false}>
                      <FormCom 
-                      formItem ={this.state.formItem}
-                      formLayout= {this.state.formLayout} 
-                      FormConfig ={this.state.FormConfig}
-                      onFinish ={this.onFinish} 
-                      onRef ={this.onFormRef}
-                     />
+                        formItem ={this.state.formItem}
+                        formLayout= {this.state.formLayout} 
+                        FormConfig ={this.state.FormConfig}
+                        onFinish ={this.onFinish} 
+                        onRef ={this.onFormRef}
+                     >
+                            <div ref='roleCheckBox'>
+
+                            <Checkbox.Group
+                                options={roleOptions}
+                                onChange={this.onChange}
+                                value ={chooseRoleArr}
+                                />
+                            </div>
+                   </FormCom> 
+                     
                 </Modal>
             )
     }

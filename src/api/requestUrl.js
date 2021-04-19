@@ -29,6 +29,9 @@ const requestUrl ={
 
     //用户管理
     'userList':'/user/list/',
+    'userEdit':'/user/edit/',
+    'userStatus':'/user/status/',
+    'userListDelete':'/user/delete/',
     
 }
 

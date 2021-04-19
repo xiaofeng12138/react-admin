@@ -10,8 +10,8 @@ export function getToken(){
    return cookies.load(adminToken)
 }
 
-export function removeToken(adminToken){
-    cookies.remove()
+export function removeToken(){
+    cookies.remove(adminToken)
 }
 
 export function setUsername(value){
@@ -22,6 +22,6 @@ export function getUsername(){
     return cookies.load(username)
 }
 
-export function removeUsername(username){
-    cookies.remove()
+export function removeUsername(){
+    cookies.remove(username)
 }
