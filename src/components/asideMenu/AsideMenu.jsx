@@ -9,12 +9,52 @@ class layoutaside extends React.Component{
     constructor(){
         super()
         this.state ={
+            router:[],
             selectedKeys:[],
             openKeys:[],
         }
     }
+
+  
+
+    //组件挂载完成之前 DOM元素渲染完成之后  UNSAFE_componentWillMount
+    UNSAFE_componentWillMount (){
+        const role = sessionStorage.getItem('userRole').split(',')
+        let routerArray = []
+
+
+        routerArray = Router.filter((item)=>{
+
+            //递归实现数据返回 
+             if(this.hasPresession(role,item)){
+                 if(item.children && item.children.length >0){
+                     item.children = item.children.filter((child)=>{
+                        if(this.hasPresession(role,child)){
+                            return child
+                        }
+                     })
+                 }
+                 return item
+              
+             } 
+        })
+
+
+
+        this.setState({
+            router:routerArray
+        })
+    }
+
+
+    hasPresession = (role,router)=>{
+        if(router.role && router.role.length > 0){
+            return role.some(ele => router.role.indexOf(ele) >= 0)
+        }
+
+    }
     //生命周期钩子函数  使用withRouter  可以获取当前路劲的url
-    componentDidMount(){
+    UNSAFE_componentDidMount(){
         let pathName = this.props.location.pathname
         let openPathName = pathName.split('/').splice(0,3).join('/')
         let meunHigh = {
@@ -70,7 +110,7 @@ class layoutaside extends React.Component{
          )  
     }
     render(){
-        const {selectedKeys,openKeys} = this.state
+        const {selectedKeys,openKeys,router} = this.state
         return(
             <div>
                 <Menu
@@ -83,7 +123,7 @@ class layoutaside extends React.Component{
                     style={{ height: '100%' }}
                       >
                     {
-                        Router && Router.map(firstItem =>{
+                        router && router.map(firstItem =>{
                             return  firstItem.children && firstItem.children.length > 0 ? this.renderSubMenu(firstItem) : this.renderMenu(firstItem)
                         })
                     }

@@ -35,6 +35,7 @@ class LoginForm extends React.Component{
             const token = res.data.data.token
             setToken(token)
             setUsername(res.data.data.username)
+            sessionStorage.setItem('userRole',res.data.data.role)
             this.props.history.push('/index')
         }).catch(err=>{
             console.log(err)

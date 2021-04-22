@@ -2,22 +2,25 @@ const router =[
     {
         title:'控制台',
         icon:'home',
-        key:'/index'
+        key:'/index',
+        role:['user'],
     },
     {
         title:'用户管理',
         icon:'home',
         key:'/index/user',
+        role:['user'],
         children:[
             {
                 title:'用户列表',
                 icon:'home',
-                key:'/index/user/list'
+                key:'/index/user/list',
+                role:['user'],
             },
             {
                 title:'添加用户',
                 icon:'home',
-                key:'/index/user/add'
+                key:'/index/user/add',
             }
         ]
     },
@@ -42,16 +45,19 @@ const router =[
         title:'职位管理',
         icon:'home',
         key:'/index/job',
+        role:['product'],
         children:[
             {
                 title:'职位列表',
                 icon:'home',
-                key:'/index/job/list'
+                key:'/index/job/list',
+                role:['product']
             },
             {
                 title:'添加职位',
                 icon:'home',
-                key:'/index/job/add'
+                key:'/index/job/add',
+                role:['product']
             }
         ]
     }, 
@@ -59,16 +65,19 @@ const router =[
         title:'员工管理',
         icon:'home',
         key:'/index/staff',
+        role:['user'],
         children:[
             {
                 title:'员工列表',
                 icon:'home',
-                key:'/index/staff/list'
+                key:'/index/staff/list',
+                role:['user'],
             },
             {
                 title:'添加员工',
                 icon:'home',
-                key:'/index/staff/add'
+                key:'/index/staff/add',
+                role:['user'],
             }
         ]
     },
