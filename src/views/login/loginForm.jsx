@@ -1,16 +1,18 @@
 import React ,{Fragment } from 'react'
 import './index.scss'
 import { withRouter } from "react-router-dom";  //添加白名单
-
 import { Form, Input, Button, Row, Col,message } from 'antd';
 import { UserOutlined, LockOutlined  } from '@ant-design/icons';
 import {valid_password} from '../../utils/valid_password'
 import {Login} from '../../api/account'
 //导入存储函数
 import {setToken,setUsername} from '../../utils/cookies'
+import {LoginAction} from '../../store/action/App'
 
 //引入获取验证码组件
 import Code from '../../components/code/index'
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 
 class LoginForm extends React.Component{
     constructor(){
@@ -28,18 +30,20 @@ class LoginForm extends React.Component{
             password:this.state.password,
             code:this.state.code,
         }
-        Login(requestData).then(res=>{
-            if(res.data.resCode === 0){
-               message.success(res.data.message)
-            }
-            const token = res.data.data.token
-            setToken(token)
-            setUsername(res.data.data.username)
-            sessionStorage.setItem('userRole',res.data.data.role)
-            this.props.history.push('/index')
-        }).catch(err=>{
-            console.log(err)
-        })
+
+        this.props.actions.handlerLogin(requestData)
+        // Login(requestData).then(res=>{
+        //     if(res.data.resCode === 0){
+        //        message.success(res.data.message)
+        //     }
+        //     const token = res.data.data.token
+        //     setToken(token)
+        //     setUsername(res.data.data.username)
+        //     sessionStorage.setItem('userRole',res.data.data.role)
+        //     this.props.history.push('/index')
+        // }).catch(err=>{
+        //     console.log(err)
+        // })
       };
       //获取输入框邮箱
       getUserName =(e)=>{
@@ -126,5 +130,21 @@ class LoginForm extends React.Component{
     }
 }
 
+const mapStateToProps = (state)=>{
+    return state
+}
 
-export default withRouter(LoginForm)
+const mapDispatchToProps = (dispatch)=>{
+
+ return {
+     actions: bindActionCreators({
+        handlerLogin:LoginAction
+     },dispatch)
+   }
+}
+// export default withRouter(LoginForm)
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(withRouter(LoginForm));

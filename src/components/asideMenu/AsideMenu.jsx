@@ -22,22 +22,28 @@ class layoutaside extends React.Component{
         const role = sessionStorage.getItem('userRole').split(',')
         let routerArray = []
 
+       if(role.includes('admin')){
+          routerArray = Router
+       }else{
+            routerArray = Router.filter((item)=>{
+                //递归实现数据返回 
+                if(this.hasPresession(role,item)){
+                    if(item.children && item.children.length >0){
+                        item.children = item.children.filter((child)=>{
+                            if(this.hasPresession(role,child)){
+                                return child
+                            }
+                            return false
+                        })
+                        return item
+                    }
+                    return item
+                } 
+                return false
+            })
 
-        routerArray = Router.filter((item)=>{
-
-            //递归实现数据返回 
-             if(this.hasPresession(role,item)){
-                 if(item.children && item.children.length >0){
-                     item.children = item.children.filter((child)=>{
-                        if(this.hasPresession(role,child)){
-                            return child
-                        }
-                     })
-                 }
-                 return item
-              
-             } 
-        })
+       }
+        
 
 
 

@@ -6,33 +6,28 @@ const config = {
         {label:'启用',value:true},
         {label:'禁用',value:false},
     ],
+    routers:[]
 }
 
 //Reducer
-const configReducer = function(state = config,action){
-    switch(action.type){
-        case 'ADD_STATUS':{
+const appConfig = function(state = config,action){
+    console.log(action)
+    switch (action.type){
+        case 'setRouter' :{
             return {
                 ...state,
-                status:[...state.status,action.payload]
+                routers:action.value
             }
         }
-        default :
-           return state
+        default:
+            return state
     }
-       
-    // if(action.type === 'ADD_STATUS'){
-    //     let stateData = JSON.parse(JSON.stringify(state))
-    //     stateData.status.push(action.payload)
-    //     return stateData
-    // }
 
-    // if(action.type === 'UPDATE_STATUS'){
-        
-    // }
-    // return state
+
+    console.log(state)
 }
+  
 
 
-export default configReducer
+export default appConfig
 
