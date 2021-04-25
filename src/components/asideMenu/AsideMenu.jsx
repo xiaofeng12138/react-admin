@@ -1,15 +1,16 @@
 import React from 'react'
 import { Menu } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
-import Router from '../../router/router'
 import { Link,withRouter } from 'react-router-dom'
+import { connect } from 'react-redux';
+import {GetRoleAction} from '../../store/action/App'
+import { bindActionCreators } from 'redux';
 const { SubMenu } = Menu;
 
 class layoutaside extends React.Component{
     constructor(){
         super()
         this.state ={
-            router:[],
             selectedKeys:[],
             openKeys:[],
         }
@@ -19,46 +20,9 @@ class layoutaside extends React.Component{
 
     //组件挂载完成之前 DOM元素渲染完成之后  UNSAFE_componentWillMount
     UNSAFE_componentWillMount (){
-        const role = sessionStorage.getItem('userRole').split(',')
-        let routerArray = []
-
-       if(role.includes('admin')){
-          routerArray = Router
-       }else{
-            routerArray = Router.filter((item)=>{
-                //递归实现数据返回 
-                if(this.hasPresession(role,item)){
-                    if(item.children && item.children.length >0){
-                        item.children = item.children.filter((child)=>{
-                            if(this.hasPresession(role,child)){
-                                return child
-                            }
-                            return false
-                        })
-                        return item
-                    }
-                    return item
-                } 
-                return false
-            })
-
-       }
-        
-
-
-
-        this.setState({
-            router:routerArray
-        })
+        this.props.actions.handlerGetRole().then(res=>{})
     }
 
-
-    hasPresession = (role,router)=>{
-        if(router.role && router.role.length > 0){
-            return role.some(ele => router.role.indexOf(ele) >= 0)
-        }
-
-    }
     //生命周期钩子函数  使用withRouter  可以获取当前路劲的url
     UNSAFE_componentDidMount(){
         let pathName = this.props.location.pathname
@@ -116,7 +80,8 @@ class layoutaside extends React.Component{
          )  
     }
     render(){
-        const {selectedKeys,openKeys,router} = this.state
+        const {selectedKeys,openKeys} = this.state
+        const {routers} = this.props
         return(
             <div>
                 <Menu
@@ -129,7 +94,7 @@ class layoutaside extends React.Component{
                     style={{ height: '100%' }}
                       >
                     {
-                        router && router.map(firstItem =>{
+                        routers && routers.map(firstItem =>{
                             return  firstItem.children && firstItem.children.length > 0 ? this.renderSubMenu(firstItem) : this.renderMenu(firstItem)
                         })
                     }
@@ -139,4 +104,20 @@ class layoutaside extends React.Component{
     }
 }
 
-export default withRouter(layoutaside);
+const mapStateToProps = (state)=>({
+    routers:state.config.routers
+})
+
+const mapDispatchToProps = (dispatch)=>{
+    return {
+        actions: bindActionCreators({
+           handlerGetRole:GetRoleAction
+        },dispatch)
+      }
+   }
+   
+export default connect(
+       mapStateToProps,
+       mapDispatchToProps
+   )(withRouter(layoutaside));
+

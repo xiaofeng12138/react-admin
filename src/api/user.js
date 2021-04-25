@@ -37,3 +37,15 @@ export function editUser(data){
         data
     })
 }
+
+
+
+/**用户角色*/
+export function getUserRole(data){
+    return service.request({
+        url:"/user/role/",
+        method:'POST',
+        data
+    })
+}
+

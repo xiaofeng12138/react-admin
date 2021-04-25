@@ -11,7 +11,6 @@ const config = {
 
 //Reducer
 const appConfig = function(state = config,action){
-    console.log(action)
     switch (action.type){
         case 'setRouter' :{
             return {
@@ -22,9 +21,6 @@ const appConfig = function(state = config,action){
         default:
             return state
     }
-
-
-    console.log(state)
 }
   
 

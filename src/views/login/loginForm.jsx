@@ -1,13 +1,11 @@
 import React ,{Fragment } from 'react'
 import './index.scss'
 import { withRouter } from "react-router-dom";  //添加白名单
-import { Form, Input, Button, Row, Col,message } from 'antd';
+import { Form, Input, Button, Row, Col } from 'antd';
 import { UserOutlined, LockOutlined  } from '@ant-design/icons';
 import {valid_password} from '../../utils/valid_password'
-import {Login} from '../../api/account'
 //导入存储函数
-import {setToken,setUsername} from '../../utils/cookies'
-import {LoginAction} from '../../store/action/App'
+import {LoginAction,GetRoleAction} from '../../store/action/App'
 
 //引入获取验证码组件
 import Code from '../../components/code/index'
@@ -31,19 +29,11 @@ class LoginForm extends React.Component{
             code:this.state.code,
         }
 
-        this.props.actions.handlerLogin(requestData)
-        // Login(requestData).then(res=>{
-        //     if(res.data.resCode === 0){
-        //        message.success(res.data.message)
-        //     }
-        //     const token = res.data.data.token
-        //     setToken(token)
-        //     setUsername(res.data.data.username)
-        //     sessionStorage.setItem('userRole',res.data.data.role)
-        //     this.props.history.push('/index')
-        // }).catch(err=>{
-        //     console.log(err)
-        // })
+        this.props.actions.handlerLogin(requestData).then(res=>{
+            // this.props.actions.handlerGetRole().then(res=>{})
+            this.props.history.push('/index')
+        })
+
       };
       //获取输入框邮箱
       getUserName =(e)=>{
@@ -135,10 +125,10 @@ const mapStateToProps = (state)=>{
 }
 
 const mapDispatchToProps = (dispatch)=>{
-
  return {
      actions: bindActionCreators({
-        handlerLogin:LoginAction
+        handlerLogin:LoginAction,
+        handlerGetRole:GetRoleAction
      },dispatch)
    }
 }
