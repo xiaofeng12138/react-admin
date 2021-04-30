@@ -3,7 +3,9 @@ import { message, Modal ,Checkbox } from 'antd';
 import FormCom from '@c/Form/index'
 import {checkPhone} from '@/utils/valid_password.js'
 import { UserAdd,GetDetailed,editUser } from '../../api/user';
+import CheckBoxAll from '@c/checkboxAll'
 import {GetUserRole} from '@/api/role'
+import { connect } from 'react-redux';
 class UserAddModal extends Component{
 
     constructor(props){
@@ -71,14 +73,46 @@ class UserAddModal extends Component{
                 },
                 {
                     type:'Slot',
-                    label:'权限',
+                    label:'角色',
                     name:'role',
-                    // required:true,
                     slotName:'roleCheckBox'
-                },
+                }, 
+                {
+                    type:'Slot',
+                    label:'用户权限',
+                    name:'role_tt',
+                    slotName:'role_tt'
+                }, 
             ],
             user_id:"",
-            chooseRoleArr:[]
+            chooseRoleArr:[],
+            role_menu_value:[],
+            role_menu:[
+                {
+                    label:'用户管理',
+                    value:'/user',
+                    child_item:[
+                        { label:'用户列表',value:'/user/list'},
+                        { label:'用户添加',value:'/user/add'},
+                    ]
+                },
+                {
+                    label:'部门管理',
+                    value:'/department',
+                    child_item:[
+                        { label:'部门列表',value:'/department/list'},
+                        { label:'部门添加',value:'/department/add'},
+                    ]
+                },
+                {
+                    label:'职位管理',
+                    value:'/job',
+                    child_item:[
+                        { label:'职位列表',value:'/job/list'},
+                        { label:'职位添加',value:'/job/add'},
+                    ]
+                },
+            ]
         }
     }
 
@@ -157,8 +191,22 @@ class UserAddModal extends Component{
     }
 
     onFinish=(value)=>{
+        this.formatRoleMeun()
         this.state.user_id ? this.handEdit(value) : this.AddFn(value)
         
+    }
+
+
+    formatRoleMeun(){
+        let roleMenu = this.props.menu
+        let arr = []
+        for(let key in roleMenu ){
+            arr = arr.concat(roleMenu[key])
+        }
+
+        this.setState({role_menu_value:arr})
+
+
     }
     onFormRef=(ref)=>{
        this.child = ref
@@ -166,6 +214,8 @@ class UserAddModal extends Component{
 
     AddFn =(value)=>{
         let roleStr = this.state.chooseRoleArr ? this.state.chooseRoleArr.join():''
+        let roleValueStr = this.state.role_menu_value ? this.state.role_menu_value.join():''
+        value.role_menu = roleValueStr
         value.role = roleStr
         UserAdd(value).then(res=>{
                 message.success(res.data.message)
@@ -175,8 +225,11 @@ class UserAddModal extends Component{
 
     handEdit =(value)=>{
         let roleStr = this.state.chooseRoleArr ? this.state.chooseRoleArr.join():''
+        let roleValueStr = this.state.role_menu_value ? this.state.role_menu_value.join():''
+
         value.id = this.state.user_id
         value.role = roleStr
+        value.role_menu = roleValueStr
         editUser(value).then(res=>{
             message.success(res.data.message)
             this.visibleModal(false)
@@ -204,13 +257,21 @@ class UserAddModal extends Component{
                         onRef ={this.onFormRef}
                      >
                             <div ref='roleCheckBox'>
-
-                            <Checkbox.Group
-                                options={roleOptions}
-                                onChange={this.onChange}
-                                value ={chooseRoleArr}
+                                <Checkbox.Group
+                                    options={roleOptions}
+                                    onChange={this.onChange}
+                                    value ={chooseRoleArr}
                                 />
                             </div>
+                           <div ref="role_tt">
+                               {
+                                   this.state.role_menu.map((item,index)=>{
+                                       return   <CheckBoxAll data={item} key={index}/>
+                                   })
+                               }
+                            
+                           </div>
+
                    </FormCom> 
                      
                 </Modal>
@@ -218,4 +279,15 @@ class UserAddModal extends Component{
     }
 }
 
-export default UserAddModal
+const mapStateToProps = (state) =>( {
+    menu:state.config.newRole
+}
+)
+
+
+// export default withRouter(LoginForm)
+
+export default connect(
+mapStateToProps,
+null
+)(UserAddModal);

@@ -1,12 +1,16 @@
 import React,{ Component,Fragment} from 'react'
+
 import {Form, Input,Button,InputNumber,Select,Radio,message,DatePicker ,Row,Col} from 'antd';
+
 import { submitForm } from '@api/common'
+
 
 import requestUrl from '@api/requestUrl'
 import SelectCom from '@c/select/index'
 import Upload from '@c/upload/index'
 import Editor from '@c/editor/index'
 // import PropTypes from 'prop-types'
+
 
 
 //定义语言
@@ -29,8 +33,12 @@ class FormCom extends Component{
                 'Date':'请选择',
                 'Upload':'请上传',
                 'Editor':'请输入',
-                'Slot':'请选择'
+                'Slot':'请选择',
+                'ChexkBox':"请选择"
             },
+
+            checkList:[],
+            checkAll:[],
         }
         this.form = React.createRef()  //固定写法 用于表单重置
     }
@@ -99,9 +107,9 @@ class FormCom extends Component{
        SlotElem =(item)=>{
         let rules = this.FormatRules(item)
         return (
-                <Form.Item label={item.label} name={item.name} key ={item.name} rules ={rules} >
-                   {this.props.children && Array.isArray(this.props.children) ? this.props.children.filter(ele =>ele.ref === item.SlotName)[0]:this.props.children}
-                </Form.Item>
+            <Form.Item label={item.label} name={item.name} key={item.name} rules={rules}>
+              { this.props.children && Array.isArray(this.props.children) ? this.props.children.filter(elem => elem.ref === item.slotName) : this.props.children } 
+            </Form.Item>
          )
     }
     
@@ -187,8 +195,6 @@ class FormCom extends Component{
             )
         }
 
-
-     
         FormItemInlineElem = (item)=>{
             return (
                     <Row key={item.name}> 

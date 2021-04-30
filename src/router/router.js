@@ -27,7 +27,7 @@ const router =[
     {
         title:'部门管理',
         icon:'home',
-        key:'/index/partment',
+        key:'/index/department',
         children:[
             {
                 title:'部门列表',

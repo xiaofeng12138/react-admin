@@ -110,7 +110,7 @@ class LoginForm extends React.Component{
                                 </Col>
                             </Row>
                         </Form.Item>
-                        <Form.Item >
+                        <Form.Item>
                             <Button type="primary" htmlType="submit" block className="login-form-button">登 录</Button>
                         </Form.Item>
                         </Form>
@@ -138,3 +138,6 @@ export default connect(
     mapStateToProps,
     mapDispatchToProps
 )(withRouter(LoginForm));
+
+
+

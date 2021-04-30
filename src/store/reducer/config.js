@@ -6,7 +6,9 @@ const config = {
         {label:'启用',value:true},
         {label:'禁用',value:false},
     ],
-    routers:[]
+    routers:[],
+    roleMenu:[],
+    newRole:[]
 }
 
 //Reducer
@@ -16,6 +18,12 @@ const appConfig = function(state = config,action){
             return {
                 ...state,
                 routers:action.value
+            }
+        }
+        case 'setRoleMenu' :{
+            return {
+                ...state,
+                roleMenu:action.value
             }
         }
         default:

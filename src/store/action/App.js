@@ -70,3 +70,14 @@ export const GetRoleAction = (data)=>dispatch =>{
      })
  }
 
+
+
+ //这是菜单权限
+
+ export function RoleMenuAction(data){
+    return {
+        type:'setRoleMenu',
+        value:data
+    }
+}
+
