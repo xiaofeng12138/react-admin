@@ -36,9 +36,66 @@ class CheckBoxAll extends React.Component {
 
     }
 
+    UNSAFE_componentWillReceiveProps(nextProps){
+        this.checkBoxInit(nextProps.init)
+    }
+
     UNSAFE_componentWillUnmount(){
         this.props.actions.handerRoleMenu({})
     }
+
+
+    //菜单复选框数据还原
+    checkBoxInit = (data)=>{
+      const check_list = data
+      //过滤值
+      const checked = check_list.filter(item =>{
+          return item.indexOf(this.props.data.value) !== -1
+      })
+
+
+
+       this.setState({
+         checkValueArr:checked
+       },()=>{
+           this.isCheckAll()
+       }) 
+    }
+
+    isCheckAll = ()=>{
+        const {check_length,checkValueArr} = this.state
+
+        //部分选中
+        let indeterminate = false
+        
+        //全部选中
+        let checkAll = false
+         
+        //部分选中
+        if(check_length !== checkValueArr.length){
+            indeterminate = true
+            checkAll = false
+        }
+         //全部选中
+        if(check_length === checkValueArr.length){
+            indeterminate = false
+            checkAll = true
+        }
+        if( checkValueArr.length === 0){
+            indeterminate = false
+            checkAll = false
+        }
+
+        this.setState({
+            indeterminate,
+            checkAll
+        },()=>{
+            this.updateRoleMeun()
+        })
+
+    }
+
+
 
     checkBoxChange =(e)=>{
         let check_status = e.target.checked;
@@ -52,8 +109,7 @@ class CheckBoxAll extends React.Component {
     }
 
     //单个选中事件
-    onChange =(e)=>{
-
+    onChange = (e)=>{
         const old_length = this.state.check_length;  //默认长度
         const new_length = e.length;
 
@@ -134,7 +190,13 @@ class CheckBoxAll extends React.Component {
 
             //不需要文本
 
-            role_menu[first.value] = check_list
+
+            let checked_value = JSON.parse(JSON.stringify(check_list))
+
+            checked_value.unshift(first.value)
+
+
+            role_menu[first.value] = checked_value
 
         }
 
@@ -142,7 +204,6 @@ class CheckBoxAll extends React.Component {
         if(check_list.length  === 0 ){
             delete role_menu[first.value]
         }
-
         console.log(role_menu)
 
         this.props.actions.handerRoleMenu(role_menu)
@@ -167,12 +228,14 @@ class CheckBoxAll extends React.Component {
 //定义父组件传参过来的类型
 CheckBoxAll.propTypes ={
      data:PropTypes.object,
+     init:PropTypes.array,
 }
 
 
 //定义组件的默认值
 CheckBoxAll.defaultProps ={
-     data:{}
+     data:{},
+     init:[]
 }
 
 

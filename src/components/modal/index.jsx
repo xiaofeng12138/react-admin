@@ -86,7 +86,10 @@ class UserAddModal extends Component{
             ],
             user_id:"",
             chooseRoleArr:[],
+            //菜单权限的内容
             role_menu_value:[],
+            //菜单权限初始化
+            role_menu_init:[],
             role_menu:[
                 {
                     label:'用户管理',
@@ -180,14 +183,25 @@ class UserAddModal extends Component{
                 FormConfig:{
                     setFieldsValue:res.data.data,
                 }   ,
-                chooseRoleArr:newStr ? newStr.split(','):[] 
+                chooseRoleArr:newStr ? newStr.split(','):[] ,
+                role_menu_init:res.data.data.role_menu ? res.data.data.role_menu.split(','):[] ,
             })
+
         })
     }
 
     handleCancel=()=>{
-       this.visibleModal(false)
-       this.child.onReset() //关闭弹窗 重置表单函数
+        this.child.onReset()
+        this.setState({
+            isModalVisible:false,  //关闭弹窗
+            FormConfig:{
+                setFieldsValue:{}, //清空表单
+            }   ,
+            chooseRoleArr:[],  //清空权限
+            role_menu_init:[],  //清空菜单权限
+        })
+    //    this.visibleModal(false)
+    //    this.child.onReset() //关闭弹窗 重置表单函数
     }
 
     onFinish=(value)=>{
@@ -203,11 +217,9 @@ class UserAddModal extends Component{
         for(let key in roleMenu ){
             arr = arr.concat(roleMenu[key])
         }
-
         this.setState({role_menu_value:arr})
-
-
     }
+
     onFormRef=(ref)=>{
        this.child = ref
     }
@@ -246,7 +258,7 @@ class UserAddModal extends Component{
 
    
     render(){
-        const {isModalVisible,showTitle,roleOptions ,chooseRoleArr} = this.state
+        const {isModalVisible,showTitle,roleOptions ,chooseRoleArr,role_menu_init} = this.state
             return (
                 <Modal  title={showTitle} visible={isModalVisible} onOk={this.handleOk} onCancel={this.handleCancel} footer ={null} maskClosable={false}>
                      <FormCom 
@@ -266,7 +278,7 @@ class UserAddModal extends Component{
                            <div ref="role_tt">
                                {
                                    this.state.role_menu.map((item,index)=>{
-                                       return   <CheckBoxAll data={item} key={index}/>
+                                       return   <CheckBoxAll data={item} key={index} init={role_menu_init} />
                                    })
                                }
                             

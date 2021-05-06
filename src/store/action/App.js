@@ -12,10 +12,18 @@ export function updateRoute(data){
     }
 }
 
+//根据用户角色判断
+// export function  hasPresession (role,router){
+//     if(router.role && router.role.length > 0){
+//         return role.some(ele => router.role.indexOf(ele) >= 0)
+//     }
+// }
 
-export function  hasPresession (role,router){
-    if(router.role && router.role.length > 0){
-        return role.some(ele => router.role.indexOf(ele) >= 0)
+//根据用户路由
+export function  hasPresession (menu,router){
+    const menus = menu.map( item=>`/index${item}`)
+    if(router.key && router.key.length > 0){
+        return menus.includes(router.key)
     }
 }
 
@@ -38,18 +46,18 @@ export const LoginAction = (data)=>dispatch =>{
 
 export const GetRoleAction = (data)=>dispatch =>{
     return getUserRole(data).then(res=>{
-         const role = res.data.data.role.split(',')
+         const menu =res.data.data.menu && res.data.data.menu.split(',')
          let routerArray = []
- 
-        if(role.includes('admin')){
+         console.log(menu)
+        if(!menu){
            routerArray = Router
         }else{
              routerArray = Router.filter((item)=>{
                  //递归实现数据返回 
-                 if(hasPresession(role,item)){
+                 if(hasPresession(menu,item)){
                      if(item.children && item.children.length >0){
                          item.children = item.children.filter((child)=>{
-                             if(hasPresession(role,child)){
+                             if(hasPresession(menu,child)){
                                  return child
                              }
                              return false
@@ -62,7 +70,6 @@ export const GetRoleAction = (data)=>dispatch =>{
              })
  
         }
-      
        dispatch(updateRoute(routerArray))
  
      }).catch(error=>{
