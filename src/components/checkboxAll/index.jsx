@@ -70,18 +70,21 @@ class CheckBoxAll extends React.Component {
         
         //全部选中
         let checkAll = false
-         
+        let length = checkValueArr.length
+        if(checkValueArr.includes(this.props.data.value)){
+            length -- ;
+        }
         //部分选中
-        if(check_length !== checkValueArr.length){
+        if(check_length !== length){
             indeterminate = true
             checkAll = false
         }
          //全部选中
-        if(check_length === checkValueArr.length){
+        if(check_length === length){
             indeterminate = false
             checkAll = true
         }
-        if( checkValueArr.length === 0){
+        if( length === 0){
             indeterminate = false
             checkAll = false
         }
@@ -92,7 +95,6 @@ class CheckBoxAll extends React.Component {
         },()=>{
             this.updateRoleMeun()
         })
-
     }
 
 
